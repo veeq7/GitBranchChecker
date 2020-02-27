@@ -1,0 +1,13 @@
+Program sledzacy wystapienia i zmiany wskazanego pliku w branchach w gicie
+
+1. Dodanie opcji do menu contextowego Windows
+2. Program szuka rekurencyjnie w obecnym kat. i wyzszych folderu .git
+3. W kazdym branchy szuka commitow dotyczacych wskazanego pliku
+4. Wyswietla liste, gdzie kazda kolumna to brachn a rekordami zmiany w pliku (wyglad wg zalaczonego obrazka)
+5. Na liscie jest mozliwosc zaznaczenia 2 plikow, ktore mozna wyslac do programu porownujacego zawartosc plikow (winmarge). Na razie sciezka do winmerge zapisana na sztywno w kodzie, w przyszlosci musi byc zaimplementowania prostych ustawien
+
+P.S. 1.
+W adds .zip winmerge (nie powinno wymagac instalacji)
+
+P.S. 2.
+W adds kawalek kodu z aplikacja dzialajaca na git. dzieki bibliotece LibGit2Sharp;
