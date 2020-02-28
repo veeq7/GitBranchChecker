@@ -1,25 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace GitBranchChecker
 {
-    public partial class BranchChecker : Form
+    public class BranchChecker
     {
-        public BranchChecker()
+        public string filePath = "";
+        public string gitPath = "";
+        
+        public void SetFilePath(string filePath)
         {
-            InitializeComponent();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
+            this.filePath = filePath;
+            gitPath = GitPathFinder.FindFromFilePath(filePath);
         }
     }
 }

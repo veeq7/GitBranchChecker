@@ -4,5 +4,5 @@ C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\bin\Debug\Git
 C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\bin\Debug\GitBranchChecker.pdb
 C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.exe
 C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.pdb
-C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.BranchChecker.resources
 C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.csproj.GenerateResource.cache
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.BranchCheckerForm.resources

@@ -48,12 +48,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BranchChecker.cs">
+    <Compile Include="BranchChecker.cs" />
+    <Compile Include="BranchCheckerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BranchChecker.Designer.cs">
-      <DependentUpon>BranchChecker.cs</DependentUpon>
+    <Compile Include="BranchCheckerForm.Designer.cs">
+      <DependentUpon>BranchCheckerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GitPathFinder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -61,8 +63,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="BranchChecker.resx">
-      <DependentUpon>BranchChecker.cs</DependentUpon>
+    <EmbeddedResource Include="BranchCheckerForm.resx">
+      <DependentUpon>BranchCheckerForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

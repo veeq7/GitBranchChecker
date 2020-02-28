@@ -1,6 +1,6 @@
 ﻿namespace GitBranchChecker
 {
-    partial class BranchChecker
+    partial class BranchCheckerForm
     {
         /// <summary>
         /// Required designer variable.
@@ -63,7 +63,7 @@
             this.btnSelectFile.TabIndex = 2;
             this.btnSelectFile.Text = "Select FIle";
             this.btnSelectFile.UseVisualStyleBackColor = true;
-            this.btnSelectFile.Click += new System.EventHandler(this.button1_Click);
+            this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_click);
             // 
             // btnRegisterAssosiation
             // 
@@ -74,6 +74,7 @@
             this.btnRegisterAssosiation.TabIndex = 3;
             this.btnRegisterAssosiation.Text = "Add To Context Menu";
             this.btnRegisterAssosiation.UseVisualStyleBackColor = true;
+            this.btnRegisterAssosiation.Click += new System.EventHandler(this.btnRegisterAssosiation_Click);
             // 
             // btnCompare
             // 
@@ -84,8 +85,9 @@
             this.btnCompare.TabIndex = 4;
             this.btnCompare.Text = "Compare";
             this.btnCompare.UseVisualStyleBackColor = true;
+            this.btnCompare.Click += new System.EventHandler(this.btnCompare_Click);
             // 
-            // BranchChecker
+            // BranchCheckerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -96,7 +98,8 @@
             this.Controls.Add(this.btnSelectFile);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.textBox1);
-            this.Name = "BranchChecker";
+            this.Name = "BranchCheckerForm";
+            this.ShowIcon = false;
             this.Text = "BranchChecker";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
