@@ -1,14 +1,14 @@
 
 - Zaplanować interfejs [Done]
 - Dodać obsługę rejestracji aplikacji w context
-	menu windows'a [Done, couldn't test without admin]
+	menu windows'a [Requires test from admin account]
 - Podpiąć wybór pliku [Done]
 - Dodać szukanie folderu .git [Done]
-- Podpiąć GitLib2Sharp
-- Zapoznać się z biblioteką oraz z przykładowym kodem używającym jej
-- Zdefiniować model danych wyświetlany w DataGridView
+- Podpiąć GitLib2Sharp [Done]
+- Zapoznać się z biblioteką oraz z przykładowym kodem używającym jej [Done]
+- Zdefiniować model danych wyświetlany w DataGridView [Done]
 - Dodać przetwarzanie danych branchy Git do
-	wyświetlanych w DataGridView modeli danych
-- Dodać obsługę przycisku porównaj (przy użyciu WinMerge)
+	wyświetlanych w DataGridView modeli danych [Done]
+- Dodać obsługę przycisku porównaj (przy użyciu WinMerge) [In Progress]
 - Ewentualne zmiany
 - Refactoring słabszych części kodu
