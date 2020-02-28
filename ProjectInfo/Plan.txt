@@ -1,0 +1,10 @@
+
+- Zaplanować interfejs
+- Dodać obsługę rejestracji aplikacji w context menu windows'a
+- Podpiąc GitLib2Sharp
+- Zapoznać się z biblioteką oraz z przykładowym kodem używającym jej
+- Zdefiniować model danych wyświetlany w DataGridView
+- Dodać przetwarzanie danych branchy Git do wyświetlanych w DataGridView modeli danych
+- Dodać obsługę przycisku porównaj (przy użyciu WinMerge)
+- Ewentualne zmiany
+- Refactoring słabszych części kodu

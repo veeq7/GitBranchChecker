@@ -1,0 +1,8 @@
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.csprojAssemblyReference.cache
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\bin\Debug\GitBranchChecker.exe.config
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\bin\Debug\GitBranchChecker.exe
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\bin\Debug\GitBranchChecker.pdb
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.exe
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.pdb
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.BranchChecker.resources
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.csproj.GenerateResource.cache

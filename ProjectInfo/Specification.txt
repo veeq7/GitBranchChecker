@@ -1,0 +1,5 @@
+Program jest używany do porównywania wersji pliku w różnych branchach gita
+tego samego projektu. Aby to zrobić należy wybrać plik, który chcemy porównać.
+Aplikacja automatycznie wypiszę wszystkie commity danego brancha w odpowiadającej
+jemu kolumnie. Aby porównać commity należy je zaznaczyć i kliknąć przycisk porównaj.
+Wtedy otworzy się program winmerge, który te pliki porówna.
