@@ -46,6 +46,8 @@ namespace GitBranchChecker
                 if (selectedCommits.Count >= 2) break;
                 int col = cell.ColumnIndex;
                 int row = cell.RowIndex;
+                if (!branchChecker.repo.branchesByColumn.ContainsKey(col)) return;
+                if (!branchChecker.repo.branchesByColumn.ContainsKey(row)) return;
                 var branch = branchChecker.repo.branchesByColumn[col];
                 var commit = branch.commitsByRow[row];
                 selectedCommits.Add(commit);
@@ -62,7 +64,6 @@ namespace GitBranchChecker
         #endregion
 
         #region SelectFile
-
         void SelectFile()
         {
             string filePath = "";

@@ -15,22 +15,28 @@ namespace GitBranchChecker
         public DataTable Parse(RepoDataModel repo)
         {
             DataTable table = new DataTable();
-            foreach (var branchkv in repo.branches)
-            {
-                var branch = branchkv.Value;
-                table.Columns.Add(branch.name);
-            }
             var branchList = DictToNameList(repo.branches);
+            foreach (var branchName in branchList)
+            {
+                table.Columns.Add(branchName);
+            }
+            List<string> previousCommitList = null;
+            List<string> commitList = null;
             for (int x = 0; x < branchList.Count; x++)
             {
+                if (!repo.branches.ContainsKey(branchList[x]))
+                {
+                    x++;
+                    continue;
+                }
                 var branch = repo.branches[branchList[x]];
-             
-                var commitList = DictToNameList(branch.commits);
+
+                previousCommitList = commitList;
+                commitList = GetSortedCommitNameList(branch.commits, previousCommitList);
 
                 for (int y = 0; y < commitList.Count; y++)
                 {
                     DataRow row;
-                    CommitDataModel commitModel = branch.commits[commitList[y]];
                     if (table.Rows.Count <= y)
                     {
                         row = table.NewRow();
@@ -39,6 +45,8 @@ namespace GitBranchChecker
                     {
                         row = table.Rows[y];
                     }
+                    if (!branch.commits.ContainsKey(commitList[y])) continue;
+                    CommitDataModel commitModel = branch.commits[commitList[y]];
 
                     branch.commitsByRow.Add(y, commitModel);
 
@@ -49,10 +57,30 @@ namespace GitBranchChecker
             return table;
         }
 
-        public List<string> DictToNameList<T>(Dictionary<string, T> branches)
+        public List<string> GetSortedCommitNameList(Dictionary<string, CommitDataModel> dict, List<string> previousDict)
         {
             List<string> list = new List<string>();
-            foreach (var kv in branches)
+            int i = 0;
+            int offset = 0;
+            foreach (var name in dict.Keys)
+            {
+                list.Add(name);
+                //if (previousDict == null || name == previousDict[i])
+                //{
+                //    list.Add(name);
+                //} else
+                //{
+                //    list.Add("");
+                //}
+                i++;
+            }
+            return list;
+        }
+
+        public List<string> DictToNameList<T>(Dictionary<string, T> dict)
+        {
+            List<string> list = new List<string>();
+            foreach (var kv in dict)
             {
                 list.Add(kv.Key);
             }

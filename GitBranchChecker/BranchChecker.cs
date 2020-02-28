@@ -37,7 +37,15 @@ namespace GitBranchChecker
         public string[] GetFilePath(CommitDataModel commit1, CommitDataModel commit2)
         {
             string[] filePaths = new string[2];
+            filePaths[0] = GetCommitFile(commit1);
+            filePaths[1] = GetCommitFile(commit2);
             return filePaths;
+        }
+        
+        public string GetCommitFile(CommitDataModel commit)
+        {
+            // TODO: access file, buffer it somewhere and return it's filepath
+            return null;
         }
     }
 }
