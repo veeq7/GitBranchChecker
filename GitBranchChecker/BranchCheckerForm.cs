@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.IO;
 using System.Security.Permissions;
 using GitBranchChecker.DataModels;
+using System.Reflection;
 
 namespace GitBranchChecker
 {
@@ -24,9 +19,13 @@ namespace GitBranchChecker
         #endregion
 
         #region Init
-        public BranchCheckerForm()
+        public BranchCheckerForm(string[] args)
         {
             InitializeComponent();
+            if (args.Length >= 1)
+            {
+                LoadFile(args[0]);
+            }
         }
         #endregion
 
@@ -35,7 +34,6 @@ namespace GitBranchChecker
         private void btnSelectFile_click(object sender, EventArgs e)
         {
             SelectFile();
-            dataGridView1.DataSource = branchChecker.Parse();
         }
 
         private void btnCompare_Click(object sender, EventArgs e)
@@ -74,19 +72,33 @@ namespace GitBranchChecker
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 filePath = dlg.FileName.ToString();
-                branchChecker.SetFilePath(filePath);
-                textBox1.Text = Path.GetFileName(filePath);
+                LoadFile(filePath);
+                ParseFile();
+            } else
+            {
+                MessageBox.Show(this, "Could not open the file!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        void LoadFile(string filePath)
+        {
+            branchChecker.SetFilePath(filePath);
+            textBox1.Text = Path.GetFileName(filePath);
+            ParseFile();
+        }
+
+        void ParseFile()
+        {
+            dataGridView1.DataSource = branchChecker.Parse();
         }
 
         #endregion
 
         #region ContextMenu
 
-        private const string MenuName = "Folder\\shell\\OpenWithBranchChecker";
+        private const string MenuName = "*\\shell\\OpenWithBranchChecker";
         private const string Command = MenuName + "\\command";
 
-        [PrincipalPermissionAttribute(SecurityAction.Demand, Role = @"BUILTIN\Administrators")]
         private void RegisterApplicationInRegistry()
         {
             // TODO: Test if it works, can't test because I am not an administrator
@@ -94,16 +106,19 @@ namespace GitBranchChecker
             RegistryKey regcmd = null;
             try
             {
+                string filePath = Assembly.GetEntryAssembly().Location;
                 regmenu = Registry.ClassesRoot.CreateSubKey(MenuName);
                 if (regmenu != null)
                     regmenu.SetValue("", "Open with Branch Checker");
+                    regmenu.SetValue("icon", filePath);
                 regcmd = Registry.ClassesRoot.CreateSubKey(Command);
                 if (regcmd != null)
-                    regcmd.SetValue("", System.Reflection.Assembly.GetEntryAssembly().Location);
+                    regcmd.SetValue("",  filePath + " %1");
+                MessageBox.Show(this, "File assossiation added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.ToString());
+                MessageBox.Show(this, "File assossiation failed, try running\nprogram with administrator rights!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {

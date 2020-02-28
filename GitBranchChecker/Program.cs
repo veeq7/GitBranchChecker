@@ -14,7 +14,7 @@ namespace GitBranchChecker
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new BranchCheckerForm());
+            Application.Run(new BranchCheckerForm(args));
         }
     }
 }

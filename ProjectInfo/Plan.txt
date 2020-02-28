@@ -1,7 +1,7 @@
 
 - Zaplanować interfejs [Done]
 - Dodać obsługę rejestracji aplikacji w context
-	menu windows'a [Requires test from admin account]
+	menu windows'a [Done]
 - Podpiąć wybór pliku [Done]
 - Dodać szukanie folderu .git [Done]
 - Podpiąć GitLib2Sharp [Done]

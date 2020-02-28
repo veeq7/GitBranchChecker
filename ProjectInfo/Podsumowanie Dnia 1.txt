@@ -5,4 +5,3 @@ nie włączy się program WinMerge, ponieważ nie pozyskałem jeszcze plików z 
 Jedyne co mi zostało to:
 - Pozyskać plik z commita
 - Poukładać commity rządami tak, aby te same commity były w jednej lini
-- Przetestować dodawanie context menu na komputerze na którym mam administratora
