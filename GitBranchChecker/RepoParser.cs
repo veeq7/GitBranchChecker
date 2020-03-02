@@ -61,17 +61,10 @@ namespace GitBranchChecker
         {
             List<string> list = new List<string>();
             int i = 0;
-            int offset = 0;
             foreach (var name in dict.Keys)
             {
+                // TODO: LINE GROUPING
                 list.Add(name);
-                //if (previousDict == null || name == previousDict[i])
-                //{
-                //    list.Add(name);
-                //} else
-                //{
-                //    list.Add("");
-                //}
                 i++;
             }
             return list;
@@ -87,31 +80,49 @@ namespace GitBranchChecker
             return list;
         }
 
-        public RepoDataModel GetRepo(string gitPath)
+        public RepoDataModel GetRepo(string gitPath, string fileRelativePath)
         {
-            using (var repo = new Repository(gitPath))
+            RepoDataModel repoModel = new RepoDataModel();
+            repoModel.repo = new Repository(gitPath);
+
+            foreach (var branch in repoModel.repo.Branches)
             {
-                RepoDataModel repoModel = new RepoDataModel();
-                foreach(var branch in repo.Branches)
+                BranchDataModel branchModel = new BranchDataModel();
+                branchModel.name = branch.FriendlyName;
+
+                Commit previousCommit = null;
+                foreach (var commit in branch.Commits)
                 {
-                    BranchDataModel branchModel = new BranchDataModel();
-                    branchModel.name = branch.FriendlyName;
-                    branchModel.branch = branch;
-
-                    foreach (var commit in branch.Commits)
+                    Blob currentCommitBlob;
+                    try
                     {
-                        CommitDataModel commitModel = new CommitDataModel();
-                        commitModel.id = commit.Id.ToString();
-                        commitModel.name = commit.Message;
-                        commitModel.commit = commit;
-
-                        branchModel.commits.Add(commitModel.id, commitModel);
+                        currentCommitBlob = commit[fileRelativePath].Target as Blob;
                     }
-
-                    repoModel.branches.Add(branchModel.name, branchModel);
+                    catch
+                    {
+                        continue;
+                    }
+                    if (previousCommit != null)
+                    {
+                        Blob previousCommitBlob = previousCommit[fileRelativePath].Target as Blob;
+                        if (previousCommitBlob.Sha == currentCommitBlob.Sha)
+                            continue;
+                    }
+                    
+                    CommitDataModel commitModel = new CommitDataModel();
+                    commitModel.id = commit.Id.ToString();
+                    commitModel.name = commit.Message;
+                    commitModel.parent = branchModel;
+                    
+                    branchModel.commits.Add(commitModel.id, commitModel);
+                    previousCommit = commit;
                 }
-                return repoModel;
+
+                repoModel.branches.Add(branchModel.name, branchModel);
             }
+            return repoModel;
+            
+            
         }
 
     }

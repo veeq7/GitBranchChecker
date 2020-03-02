@@ -13,8 +13,7 @@ namespace GitBranchChecker
     {
         #region Vars
         BranchChecker branchChecker = new BranchChecker();
-        public static string winMergePath = "\"WinMerge\\WinMergeU.exe\"";
-        public static string winMergeCommand = winMergePath + " /dr ";
+        public static string winMergePath = "WinMerge\\WinMergeU.exe";
 
         #endregion
 

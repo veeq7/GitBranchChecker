@@ -11,8 +11,6 @@ namespace GitBranchChecker.DataModels
     {
         public string name;
         public Dictionary<string, CommitDataModel> commits = new Dictionary<string, CommitDataModel>();
-        public Branch branch;
-
         public Dictionary<int, CommitDataModel> commitsByRow = new Dictionary<int, CommitDataModel>();
     }
 }

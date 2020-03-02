@@ -6,45 +6,63 @@ using System.Threading.Tasks;
 using GitBranchChecker.DataModels;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
+using LibGit2Sharp;
+using System.Windows.Forms;
 
 namespace GitBranchChecker
 {
     public class BranchChecker
     {
         public string filePath = "";
+        public string rootFolder = "";
         public string gitPath = "";
+        public string relativeFilePath = "";
         public RepoDataModel repo;
         public RepoParser parser = new RepoParser();
         
         public void SetFilePath(string filePath)
         {
             this.filePath = filePath;
-            gitPath = GitPathFinder.FindFromFilePath(filePath);
+            gitPath = GitPathFinder.FindFromFilePath(filePath, ref rootFolder);
+            relativeFilePath = filePath.Substring(rootFolder.Length+1);
         }
 
         public DataTable Parse()
         {
-            repo = parser.GetRepo(gitPath);
+            repo = parser.GetRepo(gitPath, relativeFilePath);
             return parser.Parse(repo);
         }
 
         public void Compare(CommitDataModel commit1, CommitDataModel commit2)
         {
-            string[] filePaths = GetFilePath(commit1, commit2);
-            Process.Start(BranchCheckerForm.winMergeCommand + filePaths[0] + " " + filePaths[1]);
-        }
-
-        public string[] GetFilePath(CommitDataModel commit1, CommitDataModel commit2)
-        {
-            string[] filePaths = new string[2];
-            filePaths[0] = GetCommitFile(commit1);
-            filePaths[1] = GetCommitFile(commit2);
-            return filePaths;
+            string commitFilePathLeft = GetCommitFile(commit1, 0);
+            string commitFilePathRight = GetCommitFile(commit2, 1);
+            string args = "\"" + commitFilePathLeft + "\" \"" + commitFilePathRight + "\"";
+            Process.Start(BranchCheckerForm.winMergePath, args);
         }
         
-        public string GetCommitFile(CommitDataModel commit)
+        public string GetCommitFile(CommitDataModel commitModel, int i)
         {
-            // TODO: access file, buffer it somewhere and return it's filepath
+            using (var repo = new Repository(gitPath))
+            {
+                Branch branch = repo.Branches[commitModel.parent.name];
+                Commit commit = GetCommitByID(branch, commitModel.id);
+                var blob = commit[relativeFilePath].Target as Blob;
+                var dirInfo = Directory.CreateDirectory("temp");
+                string tempPath = dirInfo.FullName + "\\commit" + i;
+                File.WriteAllText(tempPath, blob.GetContentText());
+                return tempPath;
+            }
+        }
+
+        public Commit GetCommitByID(Branch branch, string id)
+        {
+            foreach (var commit in branch.Commits)
+            {
+                if (commit.Id.ToString() == id)
+                    return commit;
+            }
             return null;
         }
     }

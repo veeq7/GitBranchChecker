@@ -11,6 +11,6 @@ namespace GitBranchChecker.DataModels
     {
         public string id;
         public string name;
-        public Commit commit;
+        public BranchDataModel parent;
     }
 }
