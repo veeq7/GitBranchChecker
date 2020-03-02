@@ -115,7 +115,7 @@ namespace GitBranchChecker
                     regcmd.SetValue("",  filePath + " %1");
                 MessageBox.Show(this, "File assossiation added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (Exception ex)
+            catch
             {
                 MessageBox.Show(this, "File assossiation failed, try running\nprogram with administrator rights!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

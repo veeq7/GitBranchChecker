@@ -14,60 +14,50 @@ namespace GitBranchChecker
     {
         public DataTable Parse(RepoDataModel repo)
         {
-            DataTable table = new DataTable();
-            var branchList = DictToNameList(repo.branches);
-            foreach (var branchName in branchList)
+            DataTable dataTable = new DataTable();
+
+            foreach (var branchName in repo.branches.Keys)
             {
-                table.Columns.Add(branchName);
+                dataTable.Columns.Add(branchName);
             }
-            List<string> previousCommitList = null;
-            List<string> commitList = null;
-            for (int x = 0; x < branchList.Count; x++)
+
+            int x = 0;
+            foreach(var branch in repo.branches.Values)
             {
-                if (!repo.branches.ContainsKey(branchList[x]))
+                int y = 0;//= x;
+                foreach(var commit in branch.commits.Values)
                 {
-                    x++;
-                    continue;
-                }
-                var branch = repo.branches[branchList[x]];
+                    //while (ShouldShift(dataTable, x, y, commit.name))
+                    //{
+                    //    y--;
+                    //}
 
-                previousCommitList = commitList;
-                commitList = GetSortedCommitNameList(branch.commits, previousCommitList);
-
-                for (int y = 0; y < commitList.Count; y++)
-                {
                     DataRow row;
-                    if (table.Rows.Count <= y)
+                    while (dataTable.Rows.Count <= y)
                     {
-                        row = table.NewRow();
-                        table.Rows.Add(row);
-                    } else
-                    {
-                        row = table.Rows[y];
+                        dataTable.Rows.Add(dataTable.NewRow());
                     }
-                    if (!branch.commits.ContainsKey(commitList[y])) continue;
-                    CommitDataModel commitModel = branch.commits[commitList[y]];
+                    row = dataTable.Rows[y];
 
-                    branch.commitsByRow.Add(y, commitModel);
+                    row[x] = commit.name;
 
-                    row[x] = commitModel.name;
+                    branch.commitsByRow.Add(y, commit);
+                    y++;// y+= repo.branches.Count();
                 }
-                repo.branchesByColumn.Add(x, branch);
+                //repo.branchesByColumn.Add(x, branch);
+                x++;
             }
-            return table;
+
+            return dataTable;
         }
 
-        public List<string> GetSortedCommitNameList(Dictionary<string, CommitDataModel> dict, List<string> previousDict)
+        bool ShouldShift(DataTable dataTable, int x, int y, string currentDescription)
         {
-            List<string> list = new List<string>();
-            int i = 0;
-            foreach (var name in dict.Keys)
-            {
-                // TODO: LINE GROUPING
-                list.Add(name);
-                i++;
-            }
-            return list;
+            return false;
+            //string oldDescription = dataTable.Rows[y][x];
+            //for (int i = x; i > 0; i--)
+            //if (oldDescription != currentDescription || String.IsNullOrEmpty(currentDescription))
+            //return true;
         }
 
         public List<string> DictToNameList<T>(Dictionary<string, T> dict)
