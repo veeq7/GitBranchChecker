@@ -1,0 +1,7 @@
+Nie mecz sie z tym wyrownywanie wierszy. Tak jak jest teraz moze byc. Tzn nic sie nie dziaje jak np commit 'Initial' nie jest w jednej lini. Wazne zeby bylo sortowanie po dacie (tak jak masz teraz).
+To co trzeba dodac to konfiguracja:
+1. Lokalizacja .exe do robienia porownan
+2. Okreslenie jakie branche biore pod uwage
+	Probowalem odpalic program na naszym gicie, ale cos sie wywalilo:
+	
+	Managed Debugging Assistant 'ContextSwitchDeadlock' : 'Środowisko CLR nie było w stanie przejść od kontekstu COM 0x7cd388 do kontekstu COM 0x7cd2d0 w ciągu 60 sekund. Wątek, do którego należy docelowy kontekst/apartament, najprawdopodobniej jest w stanie oczekiwania lub przetwarzania bardzo długotrwałej operacji bez przekazywania komunikatów systemu Windows. Ta sytuacja ma na ogół negatywny wpływ na wydajność i może nawet doprowadzić do tego, że aplikacja przestanie odpowiadać lub że użycie pamięci będzie stale wzrastać z czasem. Aby uniknąć tego problemu, wszystkie wątki STA powinny używać wartości podstawowych oczekiwania z przekazywaniem komunikatów (takich jak CoWaitForMultipleHandles) i rutynowo przekazywać komunikaty podczas długotrwałych operacji.'
