@@ -10,6 +10,5 @@
 - Dodać przetwarzanie danych branchy Git do
 	wyświetlanych w DataGridView modeli danych [Done]
 - Dodać obsługę przycisku porównaj (przy użyciu WinMerge) [Done]
-- Grupowanie po nazwie
-- Ewentualne zmiany
-- Refactoring słabszych części kodu
+- Grupowanie po nazwie [Done]
+- Refactoring słabszych części kodu [Mostly done]

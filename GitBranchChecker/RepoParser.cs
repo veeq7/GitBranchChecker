@@ -10,6 +10,7 @@ using LibGit2Sharp;
 
 namespace GitBranchChecker
 {
+
     public class RepoParser
     {
         public DataTable Parse(RepoDataModel repo)
@@ -50,7 +51,7 @@ namespace GitBranchChecker
             var commit = GetCommit(branch, indexCommit.Message);
             if (commit != null)
             {
-                row[x] = commit.name;
+                row[x] = commit.FormatDate() + " " + commit.blob.Sha + " " + commit.name;
 
                 branch.commitsByRow.Add(y, commit);
             }
@@ -112,7 +113,7 @@ namespace GitBranchChecker
 
             foreach (var branch in repoModel.repo.Branches)
             {
-                if (!IsBranchInFilterOrFilterIsEmpty(branch))
+                if (!IsBranchInFilter(branch) && !IsFilterEmpty())
                     continue;
 
                 BranchDataModel branchModel = new BranchDataModel();
@@ -137,12 +138,8 @@ namespace GitBranchChecker
                             continue;
                     }
 
-                    CommitDataModel commitModel = new CommitDataModel();
-                    commitModel.id = commit.Id.ToString();
-                    commitModel.name = commit.Message;
-                    commitModel.commit = commit;
-                    commitModel.parent = branchModel;
-                    
+                    CommitDataModel commitModel = new CommitDataModel(commit, branchModel, currentCommitBlob);
+
                     branchModel.commits.Add(commitModel.id, commitModel);
                     previousCommit = commit;
                 }
@@ -152,9 +149,8 @@ namespace GitBranchChecker
             return repoModel;
         }
 
-        bool IsBranchInFilterOrFilterIsEmpty(Branch branch)
+        bool IsBranchInFilter(Branch branch)
         {
-            if (BranchCheckerForm.configInfo.branchNameFilter.Count == 0) return true;
             foreach (var branchName in BranchCheckerForm.configInfo.branchNameFilter)
             {
                 if (branch.FriendlyName == branchName)
@@ -163,6 +159,12 @@ namespace GitBranchChecker
                 }
             }
             return false;
+        }
+
+        bool IsFilterEmpty()
+        {
+            var count = BranchCheckerForm.configInfo.branchNameFilter.Count;
+            return count == 0 || (count == 1 && String.IsNullOrEmpty(BranchCheckerForm.configInfo.branchNameFilter[0]));
         }
 
         public static Blob GetBlob(Commit commit, string relativePath)
