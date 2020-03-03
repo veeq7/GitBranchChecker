@@ -39,7 +39,7 @@ namespace GitBranchChecker
             string commitFilePathLeft = GetCommitFile(commit1, 0);
             string commitFilePathRight = GetCommitFile(commit2, 1);
             string args = "\"" + commitFilePathLeft + "\" \"" + commitFilePathRight + "\"";
-            Process.Start(BranchCheckerForm.winMergePath, args);
+            Process.Start(BranchCheckerForm.configInfo.winMergePath, args);
         }
         
         public string GetCommitFile(CommitDataModel commitModel, int i)
@@ -48,7 +48,7 @@ namespace GitBranchChecker
             {
                 Branch branch = repo.Branches[commitModel.parent.name];
                 Commit commit = GetCommitByID(branch, commitModel.id);
-                var blob = commit[relativeFilePath].Target as Blob;
+                var blob = RepoParser.GetBlob(commit, relativeFilePath);
                 var dirInfo = Directory.CreateDirectory("temp");
                 string tempPath = dirInfo.FullName + "\\commit" + i;
                 File.WriteAllText(tempPath, blob.GetContentText());

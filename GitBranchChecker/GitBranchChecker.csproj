@@ -61,6 +61,7 @@
     <Compile Include="BranchCheckerForm.Designer.cs">
       <DependentUpon>BranchCheckerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigReader.cs" />
     <Compile Include="DataModels\BranchDataModel.cs" />
     <Compile Include="DataModels\CommitDataModel.cs" />
     <Compile Include="GitPathFinder.cs" />

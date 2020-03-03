@@ -21,43 +21,78 @@ namespace GitBranchChecker
                 dataTable.Columns.Add(branchName);
             }
 
+            var indexCommits = MakeIndexCommitList(repo);
             int x = 0;
             foreach(var branch in repo.branches.Values)
             {
-                int y = 0;//= x;
-                foreach(var commit in branch.commits.Values)
+                int y = 0;
+                foreach(var indexCommit in indexCommits)
                 {
-                    //while (ShouldShift(dataTable, x, y, commit.name))
-                    //{
-                    //    y--;
-                    //}
-
-                    DataRow row;
-                    while (dataTable.Rows.Count <= y)
-                    {
-                        dataTable.Rows.Add(dataTable.NewRow());
-                    }
-                    row = dataTable.Rows[y];
-
-                    row[x] = commit.name;
-
-                    branch.commitsByRow.Add(y, commit);
-                    y++;// y+= repo.branches.Count();
+                    MakeRow(dataTable, x, branch, y, indexCommit);
+                    y++;
                 }
-                //repo.branchesByColumn.Add(x, branch);
+                repo.branchesByColumn.Add(x, branch);
                 x++;
             }
 
             return dataTable;
         }
 
-        bool ShouldShift(DataTable dataTable, int x, int y, string currentDescription)
+        private void MakeRow(DataTable dataTable, int x, BranchDataModel branch, int y, Commit indexCommit)
         {
+            DataRow row;
+            while (dataTable.Rows.Count <= y)
+            {
+                dataTable.Rows.Add(dataTable.NewRow());
+            }
+            row = dataTable.Rows[y];
+
+            var commit = GetCommit(branch, indexCommit.Message);
+            if (commit != null)
+            {
+                row[x] = commit.name;
+
+                branch.commitsByRow.Add(y, commit);
+            }
+        }
+
+        CommitDataModel GetCommit(BranchDataModel branch, string name)
+        {
+            foreach (var commit in branch.commits.Values)
+            {
+                if (commit.commit.Message == name)
+                {
+                    return commit;
+                }
+            }
+            return null;
+        }
+
+        List<Commit> MakeIndexCommitList(RepoDataModel repo)
+        {
+            List<Commit> commits = new List<Commit>();
+            foreach(var branch in repo.branches.Values)
+            {
+                foreach (var commit in branch.commits.Values)
+                {
+                    if (!IsCommitAdded(commit.commit, commits))
+                    {
+                        commits.Add(commit.commit);
+                    }
+                }
+            }
+            commits = commits.OrderByDescending(commit => commit.Committer.When).ToList();
+            return commits;
+        }
+
+        bool IsCommitAdded(Commit commit, List<Commit> commits)
+        {
+            foreach (var other in commits)
+            {
+                if (other.Message == commit.Message)
+                    return true;
+            }
             return false;
-            //string oldDescription = dataTable.Rows[y][x];
-            //for (int i = x; i > 0; i--)
-            //if (oldDescription != currentDescription || String.IsNullOrEmpty(currentDescription))
-            //return true;
         }
 
         public List<string> DictToNameList<T>(Dictionary<string, T> dict)
@@ -77,6 +112,9 @@ namespace GitBranchChecker
 
             foreach (var branch in repoModel.repo.Branches)
             {
+                if (!IsBranchInFilterOrFilterIsEmpty(branch))
+                    continue;
+
                 BranchDataModel branchModel = new BranchDataModel();
                 branchModel.name = branch.FriendlyName;
 
@@ -86,7 +124,7 @@ namespace GitBranchChecker
                     Blob currentCommitBlob;
                     try
                     {
-                        currentCommitBlob = commit[fileRelativePath].Target as Blob;
+                        currentCommitBlob = GetBlob(commit, fileRelativePath);
                     }
                     catch
                     {
@@ -94,14 +132,15 @@ namespace GitBranchChecker
                     }
                     if (previousCommit != null)
                     {
-                        Blob previousCommitBlob = previousCommit[fileRelativePath].Target as Blob;
+                        Blob previousCommitBlob = GetBlob(previousCommit, fileRelativePath);
                         if (previousCommitBlob.Sha == currentCommitBlob.Sha)
                             continue;
                     }
-                    
+
                     CommitDataModel commitModel = new CommitDataModel();
                     commitModel.id = commit.Id.ToString();
                     commitModel.name = commit.Message;
+                    commitModel.commit = commit;
                     commitModel.parent = branchModel;
                     
                     branchModel.commits.Add(commitModel.id, commitModel);
@@ -111,8 +150,38 @@ namespace GitBranchChecker
                 repoModel.branches.Add(branchModel.name, branchModel);
             }
             return repoModel;
-            
-            
+        }
+
+        bool IsBranchInFilterOrFilterIsEmpty(Branch branch)
+        {
+            if (BranchCheckerForm.configInfo.branchNameFilter.Count == 0) return true;
+            foreach (var branchName in BranchCheckerForm.configInfo.branchNameFilter)
+            {
+                if (branch.FriendlyName == branchName)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static Blob GetBlob(Commit commit, string relativePath)
+        {
+            string[] fragments = relativePath.Split('\\');
+
+            TreeEntry entry = commit[fragments[0]];
+            for (int i = 1; i <= fragments.Length; i++)
+            {
+                if (entry.TargetType == TreeEntryTargetType.Tree)
+                {
+                    Tree dir = entry.Target as Tree;
+                    entry = dir[fragments[i]];
+                } else if (entry.TargetType == TreeEntryTargetType.Blob)
+                {
+                    return entry.Target as Blob;
+                }
+            }
+            return null;
         }
 
     }

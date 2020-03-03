@@ -13,7 +13,7 @@ namespace GitBranchChecker
     {
         #region Vars
         BranchChecker branchChecker = new BranchChecker();
-        public static string winMergePath = "WinMerge\\WinMergeU.exe";
+        public static ConfigInfo configInfo = ConfigReader.LoadConfig();
 
         #endregion
 
@@ -44,8 +44,8 @@ namespace GitBranchChecker
                 int col = cell.ColumnIndex;
                 int row = cell.RowIndex;
                 if (!branchChecker.repo.branchesByColumn.ContainsKey(col)) return;
-                if (!branchChecker.repo.branchesByColumn.ContainsKey(row)) return;
                 var branch = branchChecker.repo.branchesByColumn[col];
+                if (!branch.commitsByRow.ContainsKey(row)) return;
                 var commit = branch.commitsByRow[row];
                 selectedCommits.Add(commit);
             }
@@ -72,10 +72,9 @@ namespace GitBranchChecker
             {
                 filePath = dlg.FileName.ToString();
                 LoadFile(filePath);
-                ParseFile();
             } else
             {
-                MessageBox.Show(this, "Could not open the file!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(this, "Could not open the file!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
