@@ -51,7 +51,7 @@ namespace GitBranchChecker
             var commit = GetCommit(branch, indexCommit.Message);
             if (commit != null)
             {
-                row[x] = commit.FormatDate() + " " + commit.blob.Sha + " " + commit.name;
+                row[x] = commit.FormatDate() + " " + commit.commit.Sha + " " + commit.name;
 
                 branch.commitsByRow.Add(y, commit);
             }
@@ -61,7 +61,7 @@ namespace GitBranchChecker
         {
             foreach (var commit in branch.commits.Values)
             {
-                if (commit.commit.Message == name)
+                if (commit.name == name)
                 {
                     return commit;
                 }

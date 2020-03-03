@@ -127,6 +127,7 @@ namespace GitBranchChecker
 
         #endregion
 
+        #region GridView
         private CommitDataModel GetCommitFromGrid(int col, int row)
         {
             if (!branchChecker.repo.branchesByColumn.ContainsKey(col)) return null;
@@ -134,15 +135,16 @@ namespace GitBranchChecker
             if (!branch.commitsByRow.ContainsKey(row)) return null;
             return branch.commitsByRow[row];
         }
-        
+
         private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button != System.Windows.Forms.MouseButtons.Right) return;
 
             CommitDataModel commitModel = GetCommitFromGrid(e.ColumnIndex, e.RowIndex);
             if (commitModel == null) return;
-            Clipboard.SetText(commitModel.blob.Sha);
+            Clipboard.SetText(commitModel.commit.Sha);
             MessageBox.Show("Sha copied to clipboard!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+        #endregion
     }
 }
