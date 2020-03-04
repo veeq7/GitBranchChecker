@@ -13,8 +13,7 @@ namespace GitBranchChecker
     {
         #region Vars
         BranchChecker branchChecker = new BranchChecker();
-        public static string winMergePath = "\"WinMerge\\WinMergeU.exe\"";
-        public static string winMergeCommand = winMergePath + " /dr ";
+        public static ConfigInfo configInfo = ConfigReader.LoadConfig();
 
         #endregion
 
@@ -42,13 +41,12 @@ namespace GitBranchChecker
             foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
             {
                 if (selectedCommits.Count >= 2) break;
+
                 int col = cell.ColumnIndex;
                 int row = cell.RowIndex;
-                if (!branchChecker.repo.branchesByColumn.ContainsKey(col)) return;
-                if (!branchChecker.repo.branchesByColumn.ContainsKey(row)) return;
-                var branch = branchChecker.repo.branchesByColumn[col];
-                var commit = branch.commitsByRow[row];
-                selectedCommits.Add(commit);
+                CommitDataModel commitModel = GetCommitFromGrid(col, row);
+                if (commitModel == null) return;
+                selectedCommits.Add(commitModel);
             }
             if (selectedCommits.Count == 2)
                 branchChecker.Compare(selectedCommits[0], selectedCommits[1]);
@@ -73,10 +71,9 @@ namespace GitBranchChecker
             {
                 filePath = dlg.FileName.ToString();
                 LoadFile(filePath);
-                ParseFile();
             } else
             {
-                MessageBox.Show(this, "Could not open the file!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //MessageBox.Show(this, "Could not open the file!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -101,7 +98,6 @@ namespace GitBranchChecker
 
         private void RegisterApplicationInRegistry()
         {
-            // TODO: Test if it works, can't test because I am not an administrator
             RegistryKey regmenu = null;
             RegistryKey regcmd = null;
             try
@@ -116,7 +112,7 @@ namespace GitBranchChecker
                     regcmd.SetValue("",  filePath + " %1");
                 MessageBox.Show(this, "File assossiation added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (Exception ex)
+            catch
             {
                 MessageBox.Show(this, "File assossiation failed, try running\nprogram with administrator rights!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -129,6 +125,26 @@ namespace GitBranchChecker
             }
         }
 
+        #endregion
+
+        #region GridView
+        private CommitDataModel GetCommitFromGrid(int col, int row)
+        {
+            if (!branchChecker.repo.branchesByColumn.ContainsKey(col)) return null;
+            var branch = branchChecker.repo.branchesByColumn[col];
+            if (!branch.commitsByRow.ContainsKey(row)) return null;
+            return branch.commitsByRow[row];
+        }
+
+        private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button != System.Windows.Forms.MouseButtons.Right) return;
+
+            CommitDataModel commitModel = GetCommitFromGrid(e.ColumnIndex, e.RowIndex);
+            if (commitModel == null) return;
+            Clipboard.SetText(commitModel.commit.Sha);
+            MessageBox.Show("Sha copied to clipboard!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
         #endregion
     }
 }

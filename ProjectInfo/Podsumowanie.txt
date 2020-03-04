@@ -1,0 +1,6 @@
+Projekt był bardzo ciekawy. Problemy (tj. grupowanie commitów linijkami), które miałem
+rozwiązać były interesujące. Biblioteka GitLib2Sharp była bardzo przydatna.
+
+Udało mi się zrobić całkiem znośny algorytm grupujący. Uważam, że struktura
+projektu była znacznie lepsza niż ta z poprzedniego projektu. Tym razem
+zapis/odczyt z xml okazał się bardzo prosty i przydatny.

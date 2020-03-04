@@ -52,3 +52,4 @@ C:\Users\veeq\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranch
 C:\Users\veeq\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.csproj.CopyComplete
 C:\Users\veeq\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.exe
 C:\Users\veeq\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.pdb
+C:\Users\praktykant\source\repos\GitBranchChecker\GitBranchChecker\obj\Debug\GitBranchChecker.Properties.Resources.resources

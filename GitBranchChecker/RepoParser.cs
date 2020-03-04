@@ -10,71 +10,90 @@ using LibGit2Sharp;
 
 namespace GitBranchChecker
 {
+
     public class RepoParser
     {
         public DataTable Parse(RepoDataModel repo)
         {
-            DataTable table = new DataTable();
-            var branchList = DictToNameList(repo.branches);
-            foreach (var branchName in branchList)
+            DataTable dataTable = new DataTable();
+
+            foreach (var branchName in repo.branches.Keys)
             {
-                table.Columns.Add(branchName);
+                dataTable.Columns.Add(branchName);
             }
-            List<string> previousCommitList = null;
-            List<string> commitList = null;
-            for (int x = 0; x < branchList.Count; x++)
+
+            var indexCommits = MakeIndexCommitList(repo);
+            int x = 0;
+            foreach(var branch in repo.branches.Values)
             {
-                if (!repo.branches.ContainsKey(branchList[x]))
+                int y = 0;
+                foreach(var indexCommit in indexCommits)
                 {
-                    x++;
-                    continue;
-                }
-                var branch = repo.branches[branchList[x]];
-
-                previousCommitList = commitList;
-                commitList = GetSortedCommitNameList(branch.commits, previousCommitList);
-
-                for (int y = 0; y < commitList.Count; y++)
-                {
-                    DataRow row;
-                    if (table.Rows.Count <= y)
-                    {
-                        row = table.NewRow();
-                        table.Rows.Add(row);
-                    } else
-                    {
-                        row = table.Rows[y];
-                    }
-                    if (!branch.commits.ContainsKey(commitList[y])) continue;
-                    CommitDataModel commitModel = branch.commits[commitList[y]];
-
-                    branch.commitsByRow.Add(y, commitModel);
-
-                    row[x] = commitModel.name;
+                    MakeRow(dataTable, x, branch, y, indexCommit);
+                    y++;
                 }
                 repo.branchesByColumn.Add(x, branch);
+                x++;
             }
-            return table;
+
+            return dataTable;
         }
 
-        public List<string> GetSortedCommitNameList(Dictionary<string, CommitDataModel> dict, List<string> previousDict)
+        private void MakeRow(DataTable dataTable, int x, BranchDataModel branch, int y, Commit indexCommit)
         {
-            List<string> list = new List<string>();
-            int i = 0;
-            int offset = 0;
-            foreach (var name in dict.Keys)
+            DataRow row;
+            while (dataTable.Rows.Count <= y)
             {
-                list.Add(name);
-                //if (previousDict == null || name == previousDict[i])
-                //{
-                //    list.Add(name);
-                //} else
-                //{
-                //    list.Add("");
-                //}
-                i++;
+                dataTable.Rows.Add(dataTable.NewRow());
             }
-            return list;
+            row = dataTable.Rows[y];
+
+            var commit = GetCommit(branch, indexCommit.Message);
+            if (commit != null)
+            {
+                row[x] = commit.FormatDate() + " " + commit.commit.Sha + " " + commit.name;
+
+                branch.commitsByRow.Add(y, commit);
+            }
+        }
+
+        CommitDataModel GetCommit(BranchDataModel branch, string name)
+        {
+            foreach (var commit in branch.commits.Values)
+            {
+                if (commit.name == name)
+                {
+                    return commit;
+                }
+            }
+            return null;
+        }
+
+        List<Commit> MakeIndexCommitList(RepoDataModel repo)
+        {
+            List<Commit> commits = new List<Commit>();
+            foreach(var branch in repo.branches.Values)
+            {
+                foreach (var commit in branch.commits.Values)
+                {
+                    if (!IsCommitAdded(commit.commit, commits))
+                    {
+                        commits.Add(commit.commit);
+                    }
+                }
+            }
+            commits = commits.OrderByDescending(commit => commit.Committer.When).ToList();
+            return commits;
+        }
+
+        bool IsCommitAdded(Commit commit, List<Commit> commits)
+        {
+            foreach (var other in commits)
+            {
+                if (other.Message == commit.Message)
+                    return true;
+            }
+            return false;
         }
 
         public List<string> DictToNameList<T>(Dictionary<string, T> dict)
@@ -87,31 +106,84 @@ namespace GitBranchChecker
             return list;
         }
 
-        public RepoDataModel GetRepo(string gitPath)
+        public RepoDataModel GetRepo(string gitPath, string fileRelativePath)
         {
-            using (var repo = new Repository(gitPath))
+            RepoDataModel repoModel = new RepoDataModel();
+            repoModel.repo = new Repository(gitPath);
+
+            foreach (var branch in repoModel.repo.Branches)
             {
-                RepoDataModel repoModel = new RepoDataModel();
-                foreach(var branch in repo.Branches)
+                if (!IsBranchInFilter(branch) && !IsFilterEmpty())
+                    continue;
+
+                BranchDataModel branchModel = new BranchDataModel();
+                branchModel.name = branch.FriendlyName;
+
+                Commit previousCommit = null;
+                foreach (var commit in branch.Commits.Reverse())
                 {
-                    BranchDataModel branchModel = new BranchDataModel();
-                    branchModel.name = branch.FriendlyName;
-                    branchModel.branch = branch;
-
-                    foreach (var commit in branch.Commits)
+                    Blob currentCommitBlob;
+                    try
                     {
-                        CommitDataModel commitModel = new CommitDataModel();
-                        commitModel.id = commit.Id.ToString();
-                        commitModel.name = commit.Message;
-                        commitModel.commit = commit;
-
-                        branchModel.commits.Add(commitModel.id, commitModel);
+                        currentCommitBlob = GetBlob(commit, fileRelativePath);
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    if (previousCommit != null)
+                    {
+                        Blob previousCommitBlob = GetBlob(previousCommit, fileRelativePath);
+                        if (previousCommitBlob.Sha == currentCommitBlob.Sha)
+                            continue;
                     }
 
-                    repoModel.branches.Add(branchModel.name, branchModel);
+                    CommitDataModel commitModel = new CommitDataModel(commit, branchModel, currentCommitBlob);
+
+                    branchModel.commits.Add(commitModel.id, commitModel);
+                    previousCommit = commit;
                 }
-                return repoModel;
+
+                repoModel.branches.Add(branchModel.name, branchModel);
             }
+            return repoModel;
+        }
+
+        bool IsBranchInFilter(Branch branch)
+        {
+            foreach (var branchName in BranchCheckerForm.configInfo.branchNameFilter)
+            {
+                if (branch.FriendlyName == branchName)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool IsFilterEmpty()
+        {
+            var count = BranchCheckerForm.configInfo.branchNameFilter.Count;
+            return count == 0 || (count == 1 && String.IsNullOrEmpty(BranchCheckerForm.configInfo.branchNameFilter[0]));
+        }
+
+        public static Blob GetBlob(Commit commit, string relativePath)
+        {
+            string[] fragments = relativePath.Split('\\');
+
+            TreeEntry entry = commit[fragments[0]];
+            for (int i = 1; i <= fragments.Length; i++)
+            {
+                if (entry.TargetType == TreeEntryTargetType.Tree)
+                {
+                    Tree dir = entry.Target as Tree;
+                    entry = dir[fragments[i]];
+                } else if (entry.TargetType == TreeEntryTargetType.Blob)
+                {
+                    return entry.Target as Blob;
+                }
+            }
+            return null;
         }
 
     }

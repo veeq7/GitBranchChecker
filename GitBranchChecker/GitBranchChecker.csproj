@@ -61,12 +61,18 @@
     <Compile Include="BranchCheckerForm.Designer.cs">
       <DependentUpon>BranchCheckerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfigReader.cs" />
     <Compile Include="DataModels\BranchDataModel.cs" />
     <Compile Include="DataModels\CommitDataModel.cs" />
     <Compile Include="GitPathFinder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataModels\RepoDataModel.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RepoParser.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,6 +83,16 @@
     <EmbeddedResource Include="BranchCheckerForm.resx">
       <DependentUpon>BranchCheckerForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RegEdit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RegEdit1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -31,14 +31,14 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.btnSelectFile = new System.Windows.Forms.Button();
-            this.btnRegisterAssosiation = new System.Windows.Forms.Button();
             this.btnCompare = new System.Windows.Forms.Button();
+            this.btnRegisterAssosiation = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 12);
+            this.textBox1.Location = new System.Drawing.Point(12, 18);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(359, 20);
@@ -54,36 +54,26 @@
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 38);
+            this.dataGridView1.Location = new System.Drawing.Point(12, 48);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowTemplate.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowTemplate.Height = 30;
+            this.dataGridView1.RowTemplate.Height = 45;
             this.dataGridView1.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.Size = new System.Drawing.Size(776, 374);
+            this.dataGridView1.Size = new System.Drawing.Size(776, 364);
             this.dataGridView1.TabIndex = 1;
+            this.dataGridView1.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDown);
             // 
             // btnSelectFile
             // 
-            this.btnSelectFile.Location = new System.Drawing.Point(377, 12);
+            this.btnSelectFile.Location = new System.Drawing.Point(377, 18);
             this.btnSelectFile.Name = "btnSelectFile";
-            this.btnSelectFile.Size = new System.Drawing.Size(70, 20);
+            this.btnSelectFile.Size = new System.Drawing.Size(82, 20);
             this.btnSelectFile.TabIndex = 2;
             this.btnSelectFile.Text = "Select File";
             this.btnSelectFile.UseVisualStyleBackColor = true;
             this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_click);
-            // 
-            // btnRegisterAssosiation
-            // 
-            this.btnRegisterAssosiation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRegisterAssosiation.Location = new System.Drawing.Point(666, 12);
-            this.btnRegisterAssosiation.Name = "btnRegisterAssosiation";
-            this.btnRegisterAssosiation.Size = new System.Drawing.Size(122, 20);
-            this.btnRegisterAssosiation.TabIndex = 3;
-            this.btnRegisterAssosiation.Text = "Add To Context Menu";
-            this.btnRegisterAssosiation.UseVisualStyleBackColor = true;
-            this.btnRegisterAssosiation.Click += new System.EventHandler(this.btnRegisterAssosiation_Click);
             // 
             // btnCompare
             // 
@@ -95,6 +85,18 @@
             this.btnCompare.Text = "Compare";
             this.btnCompare.UseVisualStyleBackColor = true;
             this.btnCompare.Click += new System.EventHandler(this.btnCompare_Click);
+            // 
+            // btnRegisterAssosiation
+            // 
+            this.btnRegisterAssosiation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRegisterAssosiation.BackgroundImage = global::GitBranchChecker.Properties.Resources.RegEdit1;
+            this.btnRegisterAssosiation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnRegisterAssosiation.Location = new System.Drawing.Point(755, 12);
+            this.btnRegisterAssosiation.Name = "btnRegisterAssosiation";
+            this.btnRegisterAssosiation.Size = new System.Drawing.Size(33, 30);
+            this.btnRegisterAssosiation.TabIndex = 3;
+            this.btnRegisterAssosiation.UseVisualStyleBackColor = true;
+            this.btnRegisterAssosiation.Click += new System.EventHandler(this.btnRegisterAssosiation_Click);
             // 
             // BranchCheckerForm
             // 
