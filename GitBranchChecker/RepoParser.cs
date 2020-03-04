@@ -122,6 +122,7 @@ namespace GitBranchChecker
                 Commit previousCommit = null;
                 foreach (var commit in branch.Commits)
                 {
+                    // TODO: sprawdzanie sha działa od góry do dołu a powinno na odwrót!
                     Blob currentCommitBlob;
                     try
                     {
@@ -136,6 +137,10 @@ namespace GitBranchChecker
                         Blob previousCommitBlob = GetBlob(previousCommit, fileRelativePath);
                         if (previousCommitBlob.Sha == currentCommitBlob.Sha)
                             continue;
+                        else
+                        {
+                            var i = 0;
+                        }
                     }
 
                     CommitDataModel commitModel = new CommitDataModel(commit, branchModel, currentCommitBlob);
