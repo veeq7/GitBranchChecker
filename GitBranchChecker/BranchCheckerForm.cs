@@ -6,6 +6,7 @@ using System.IO;
 using System.Security.Permissions;
 using GitBranchChecker.DataModels;
 using System.Reflection;
+using System.Drawing;
 
 namespace GitBranchChecker
 {
@@ -39,19 +40,7 @@ namespace GitBranchChecker
 
         private void btnCompare_Click(object sender, EventArgs e)
         {
-            List<CommitDataModel> selectedCommits = new List<CommitDataModel>();
-            foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
-            {
-                if (selectedCommits.Count >= 2) break;
-
-                int col = cell.ColumnIndex;
-                int row = cell.RowIndex;
-                CommitDataModel commitModel = GetCommitFromGrid(col, row);
-                if (commitModel == null) return;
-                selectedCommits.Add(commitModel);
-            }
-            if (selectedCommits.Count == 2)
-                branchChecker.Compare(selectedCommits[0], selectedCommits[1]);
+            Compare();
         }
 
         private void btnRegisterAssosiation_Click(object sender, EventArgs e)
@@ -98,7 +87,51 @@ namespace GitBranchChecker
 
         #endregion
 
-        #region ContextMenu
+        #region Compare
+        private List<CommitDataModel> GetSelectedCommits()
+        {
+            List<CommitDataModel> selectedCommits = new List<CommitDataModel>();
+            foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
+            {
+                int col = cell.ColumnIndex;
+                int row = cell.RowIndex;
+                CommitDataModel commitModel = GetCommitFromGrid(col, row);
+                if (commitModel == null) continue;
+                selectedCommits.Add(commitModel);
+            }
+            return selectedCommits;
+        }
+
+        private int CountValidSelectedCommits()
+        {
+            return GetSelectedCommits().Count;
+        }
+
+        private void LimitSelection()
+        {
+            var selectedCells = dataGridView1.SelectedCells;
+            while (dataGridView1.SelectedCells.Count > 3)
+            {
+                selectedCells[selectedCells.Count - 1].Selected = false;
+            }
+        }
+
+        private void OpenFile()
+        {
+            var selectedCommits = GetSelectedCommits();
+            if (selectedCommits.Count > 0)
+                branchChecker.OpenFile(selectedCommits);
+        }
+
+        private void Compare()
+        {
+            var selectedCommits = GetSelectedCommits();
+            if (selectedCommits.Count > 0 && selectedCommits.Count <= 3)
+                branchChecker.Compare(selectedCommits);
+        }
+        #endregion
+
+        #region WindowsContextMenu
 
         private const string MenuName = "*\\shell\\OpenWithBranchChecker";
         private const string Command = MenuName + "\\command";
@@ -135,6 +168,7 @@ namespace GitBranchChecker
         #endregion
 
         #region GridView
+
         private CommitDataModel GetCommitFromGrid(int col, int row)
         {
             if (!branchChecker.repo.branchesByColumn.ContainsKey(col)) return null;
@@ -143,14 +177,53 @@ namespace GitBranchChecker
             return branch.commitsByRow[row];
         }
 
+        private int _current_col;
+        private int _current_row;
         private void dataGridView1_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button != System.Windows.Forms.MouseButtons.Right) return;
+            LimitSelection();
 
-            CommitDataModel commitModel = GetCommitFromGrid(e.ColumnIndex, e.RowIndex);
+            if (e.Button != MouseButtons.Right) return;
+            int validCount = CountValidSelectedCommits();
+            if (validCount == 0) return;
+
+            ContextMenu m = new ContextMenu();
+            if (validCount == 1) m.MenuItems.Add(new MenuItem("Copy Commit Sha", new EventHandler(CMCopyCommitSha)));
+            if (validCount == 1) m.MenuItems.Add(new MenuItem("Copy File Sha", new EventHandler(CMCopyFileSha)));
+            if (validCount > 0) m.MenuItems.Add(new MenuItem("Open in Text Editor", new EventHandler(CMOpenInTextEditor)));
+            if (validCount > 1 && validCount <= 3) m.MenuItems.Add(new MenuItem("Compare", new EventHandler(CMCompare)));
+
+            
+            _current_col = e.ColumnIndex;
+            _current_row = e.RowIndex;
+            
+            m.Show(dataGridView1, dataGridView1.PointToClient(MousePosition));
+        }
+
+        void CMCopyCommitSha(object sender, EventArgs e)
+        {
+            CommitDataModel commitModel = GetCommitFromGrid(_current_col, _current_row);
             if (commitModel == null) return;
             Clipboard.SetText(commitModel.commit.Sha);
-            MessageBox.Show("Sha copied to clipboard!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Commit Sha copied to clipboard!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        void CMCopyFileSha(object sender, EventArgs e)
+        {
+            CommitDataModel commitModel = GetCommitFromGrid(_current_col, _current_row);
+            if (commitModel == null) return;
+            Clipboard.SetText(commitModel.blob.Sha);
+            MessageBox.Show("File Sha copied to clipboard!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        void CMOpenInTextEditor(object sender, EventArgs e)
+        {
+            OpenFile();
+        }
+
+        void CMCompare(object sender, EventArgs e)
+        {
+            Compare();
         }
         #endregion
 

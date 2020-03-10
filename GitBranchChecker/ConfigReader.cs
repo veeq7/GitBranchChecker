@@ -43,7 +43,7 @@ namespace GitBranchChecker
             xmlWriter.WriteString(defaultConfigInfo.winMergePath);
             xmlWriter.WriteEndElement();
 
-            xmlWriter.WriteStartElement("WinMergePath");
+            xmlWriter.WriteStartElement("TextEditorPath");
             xmlWriter.WriteString(defaultConfigInfo.textEditor);
             xmlWriter.WriteEndElement();
 
@@ -67,6 +67,7 @@ namespace GitBranchChecker
                 xmlDocument.Load(configFilePath);
 
                 configInfo.winMergePath = xmlDocument.SelectSingleNode("//WinMergePath").InnerText;
+                configInfo.textEditor = xmlDocument.SelectSingleNode("//TextEditorPath").InnerText;
 
                 foreach (XmlNode node in xmlDocument.SelectNodes("//BranchNameFilter/Branch"))
                 {

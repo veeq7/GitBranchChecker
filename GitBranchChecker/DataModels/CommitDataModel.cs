@@ -68,5 +68,10 @@ namespace GitBranchChecker.DataModels
             endTicks = endTime.Value.Ticks;
             return startTicks <= commitTicks && commitTicks <= endTicks;
         }
+
+        public string ToString()
+        {
+            return FormatDate() + " [" + new string(commit.Sha.Take(7).ToArray()) + "] \n" + name;
+        }
     }
 }

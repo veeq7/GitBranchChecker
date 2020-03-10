@@ -39,12 +39,33 @@ namespace GitBranchChecker
             return parser.Parse(repo);
         }
 
-        public void Compare(CommitDataModel commit1, CommitDataModel commit2)
+        public void OpenFile(List<CommitDataModel> commits)
         {
-            string commitFilePathLeft = GetCommitFile(commit1, 0);
-            string commitFilePathRight = GetCommitFile(commit2, 1);
-            string args = "\"" + commitFilePathLeft + "\" \"" + commitFilePathRight + "\"";
-            Process.Start(BranchCheckerForm.configInfo.winMergePath, args);
+            int i = 0;
+            commits.OrderByDescending(x => x.commit.Committer.When).ToList().ForEach((x) => {
+                Process.Start(BranchCheckerForm.configInfo.textEditor, GetCommitFile(x, i++));
+            });
+        }
+
+        public void Compare(List<CommitDataModel> commits)
+        {
+            var orderedCommits = commits.OrderByDescending(x => x.commit.Committer.When).ToList();
+            string fileArgs = "\"" + String.Join("\" \"", orderedCommits.Select((x, i) => GetCommitFile(x, i))) + "\"";
+            string nameArgs = MakeNameArgs(orderedCommits);
+            Process.Start(BranchCheckerForm.configInfo.winMergePath, fileArgs + " " + nameArgs);
+        }
+
+        private string MakeNameArgs(List<CommitDataModel> commits)
+        {
+            if (commits.Count == 2)
+            {
+                return "/dl \"" + commits[0].ToString() + "\" /dr \"" + commits[1].ToString() + "\"";
+            }
+            else if (commits.Count == 3)
+            {
+                return "/dl \"" + commits[0].ToString() + "\" /dm \"" + commits[1].ToString() + "\" /dr \"" + commits[2].ToString() + "\"";
+            }
+            return "";
         }
 
         public string GetCommitFile(CommitDataModel commitModel, int i)

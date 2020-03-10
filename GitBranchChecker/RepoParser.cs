@@ -54,7 +54,7 @@ namespace GitBranchChecker
             var commit = GetCommit(branch, indexCommit.Message);
             if (commit != null && commit.IsInDateFilter())
             {
-                row[x] = commit.FormatDate() + " [" + new string(commit.commit.Sha.Take(7).ToArray()) + "]\n" + commit.name;
+                row[x] = commit.ToString();
 
                 branch.commitsByRow.Add(y, commit);
             }
