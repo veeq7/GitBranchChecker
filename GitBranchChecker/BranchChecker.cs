@@ -20,17 +20,22 @@ namespace GitBranchChecker
         public string relativeFilePath = "";
         public RepoDataModel repo;
         public RepoParser parser = new RepoParser();
-        
+
         public void SetFilePath(string filePath)
         {
             this.filePath = filePath;
             gitPath = GitPathFinder.FindFromFilePath(filePath, ref rootFolder);
-            relativeFilePath = filePath.Substring(rootFolder.Length+1);
+            relativeFilePath = filePath.Substring(rootFolder.Length + 1);
         }
 
         public DataTable Parse()
         {
             repo = parser.GetRepo(gitPath, relativeFilePath);
+            return parser.Parse(repo);
+        }
+
+        public DataTable Update()
+        {
             return parser.Parse(repo);
         }
 
@@ -41,14 +46,14 @@ namespace GitBranchChecker
             string args = "\"" + commitFilePathLeft + "\" \"" + commitFilePathRight + "\"";
             Process.Start(BranchCheckerForm.configInfo.winMergePath, args);
         }
-        
+
         public string GetCommitFile(CommitDataModel commitModel, int i)
         {
             using (var repo = new Repository(gitPath))
             {
                 Branch branch = repo.Branches[commitModel.parent.name];
                 Commit commit = GetCommitByID(branch, commitModel.id);
-                var blob = RepoParser.GetBlob(commit, relativeFilePath);
+                var blob = commitModel.blob;
                 var dirInfo = Directory.CreateDirectory("temp");
                 string tempPath = dirInfo.FullName + "\\commit" + i;
                 File.WriteAllText(tempPath, blob.GetContentText());

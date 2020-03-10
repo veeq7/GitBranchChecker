@@ -1,5 +1,5 @@
 1. Blad czytania ustawien przez aplikacjie uruchomiona z menu contextowego
-2. Dodanie ikonki (w zalaczonym pliku)
+*2. Dodanie ikonki (w zalaczonym pliku)
 3. Dodanie statusu wykonania/pasku ladowania informujacego o postepach
 4. Mozliwosc wskazania w konfiguracji edytora tekstowego (domyslnie notepad)
 5. Dodanie menu contextowego na liscie
@@ -9,9 +9,9 @@
 	- Porownania 3 zaznaczonych plikow
 	Przy probie zaznaczenia czwartego pliku pierwszy zaznaczony powinien sie odznacza
 6. Sortowanie kolumn (branchy) np wg ukladu w pliku konfiguracyjnym
-7. Poprawa czytelnosci - dodanie lamania linii po dacie (zmiana formatu daty na prezentowany w sourcetree) i sha, zamiana sha na skrocona wersje (7 pierwszych znakow):
+*7. Poprawa czytelnosci - dodanie lamania linii po dacie (zmiana formatu daty na prezentowany w sourcetree) i sha, zamiana sha na skrocona wersje (7 pierwszych znakow):
 	27 lut 2020 23:26 [8f6b84f]
 	Change 987 - add some text II
 8. Przy porownaniu ustalenie stalej pozycji plikow w porownaniu (po lewj starszy po prawnej nowszy) + poprawa czytlenosci przez mowiace cos nazwy porownywanych plikow
 9. Prosty programik mowiacy w ktorym branchu znajduje sie wskazany sha podpiety jako custom action (prawdopodobnie przez messagebox)
-10. Dodanie nullable filtra 'data od' i 'data do' (na dialogu), null => bez ograniczenia daty
+*10. Dodanie nullable filtra 'data od' i 'data do' (na dialogu), null => bez ograniczenia daty

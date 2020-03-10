@@ -37,5 +37,36 @@ namespace GitBranchChecker.DataModels
             if (i.ToString().Length == 1) return "0" + i;
             return i.ToString();
         }
+
+        public bool IsInDateFilter()
+        {
+            DateTime? startTime = BranchCheckerForm.configInfo.dateFilterStart;
+            DateTime? endTime = BranchCheckerForm.configInfo.dateFilterEnd;
+            long commitTicks = commit.Committer.When.Date.Ticks;
+            long startTicks;
+            long endTicks;
+
+            if (!startTime.HasValue && !endTime.HasValue)
+            {
+                return true;
+            }
+
+            if (startTime.HasValue)
+            {
+                startTicks = startTime.Value.Ticks;
+
+                return startTicks <= commitTicks;
+            }
+            if (endTime.HasValue)
+            {
+                endTicks = endTime.Value.Ticks;
+
+                return commitTicks <= endTicks;
+            }
+
+            startTicks = startTime.Value.Ticks;
+            endTicks = endTime.Value.Ticks;
+            return startTicks <= commitTicks && commitTicks <= endTicks;
+        }
     }
 }

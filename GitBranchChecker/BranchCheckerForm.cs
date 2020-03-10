@@ -14,6 +14,7 @@ namespace GitBranchChecker
         #region Vars
         BranchChecker branchChecker = new BranchChecker();
         public static ConfigInfo configInfo = ConfigReader.LoadConfig();
+        private bool dateInitialized = false;
 
         #endregion
 
@@ -25,6 +26,7 @@ namespace GitBranchChecker
             {
                 LoadFile(args[0]);
             }
+            InitFilerDates();
         }
         #endregion
 
@@ -88,6 +90,11 @@ namespace GitBranchChecker
         {
             dataGridView1.DataSource = branchChecker.Parse();
         }
+        
+        void UpdateTable()
+        {
+            dataGridView1.DataSource = branchChecker.Update();
+        }
 
         #endregion
 
@@ -145,6 +152,74 @@ namespace GitBranchChecker
             Clipboard.SetText(commitModel.commit.Sha);
             MessageBox.Show("Sha copied to clipboard!", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+        #endregion
+
+        #region DateFilter
+
+        private void InitFilerDates()
+        {
+            startFilterDate.Enabled = false;
+            startFilterDate.Value = DateTime.Now;
+            endFilterDate.Enabled = false;
+            endFilterDate.Value = DateTime.Now;
+            dateInitialized = true;
+        }
+
+        private void doFilterStartDate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!dateInitialized) return;
+            if (doFilterStartDate.Checked)
+            {
+                configInfo.dateFilterStart = startFilterDate.Value;
+                endFilterDate.MinDate = startFilterDate.Value;
+                startFilterDate.Enabled = true;
+            }
+            else
+            {
+                endFilterDate.MinDate = DateTimePicker.MinimumDateTime;
+                configInfo.dateFilterStart = null;
+                startFilterDate.Enabled = false;
+            }
+            UpdateTable();
+        }
+
+        private void doFilterEndDate_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!dateInitialized) return;
+            if (doFilterEndDate.Checked)
+            {
+                configInfo.dateFilterEnd = endFilterDate.Value;
+                endFilterDate.Enabled = true;
+            } else
+            {
+                configInfo.dateFilterEnd = null;
+                endFilterDate.Enabled = false;
+            }
+            UpdateTable();
+        }
+
+
+
+        private void startFilterDate_ValueChanged(object sender, EventArgs e)
+        {
+            if (!dateInitialized) return;
+            doFilterEndDate.Checked = true;
+            configInfo.dateFilterStart = startFilterDate.Value;
+            endFilterDate.MinDate = startFilterDate.Value;
+            configInfo.dateFilterEnd = endFilterDate.Value;
+
+            UpdateTable();
+        }
+
+        private void endFilterDate_ValueChanged(object sender, EventArgs e)
+        {
+            if (!dateInitialized) return;
+            doFilterEndDate.Checked = true;
+            configInfo.dateFilterEnd = endFilterDate.Value;
+
+            UpdateTable();
+        }
+
         #endregion
     }
 }

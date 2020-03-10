@@ -17,6 +17,9 @@ namespace GitBranchChecker
         {
             DataTable dataTable = new DataTable();
 
+            repo.branchesByColumn.Clear();
+            repo.branches.Values.ToList().ForEach(branch => branch.commitsByRow.Clear());
+
             foreach (var branchName in repo.branches.Keys)
             {
                 dataTable.Columns.Add(branchName);
@@ -49,9 +52,9 @@ namespace GitBranchChecker
             row = dataTable.Rows[y];
 
             var commit = GetCommit(branch, indexCommit.Message);
-            if (commit != null)
+            if (commit != null && commit.IsInDateFilter())
             {
-                row[x] = commit.FormatDate() + " " + commit.commit.Sha + " " + commit.name;
+                row[x] = commit.FormatDate() + " [" + new string(commit.commit.Sha.Take(7).ToArray()) + "]\n" + commit.name;
 
                 branch.commitsByRow.Add(y, commit);
             }
@@ -119,7 +122,7 @@ namespace GitBranchChecker
                 BranchDataModel branchModel = new BranchDataModel();
                 branchModel.name = branch.FriendlyName;
 
-                Commit previousCommit = null;
+                Blob previousCommitBlob = null;
                 foreach (var commit in branch.Commits.Reverse())
                 {
                     Blob currentCommitBlob;
@@ -131,9 +134,8 @@ namespace GitBranchChecker
                     {
                         continue;
                     }
-                    if (previousCommit != null)
+                    if (previousCommitBlob != null)
                     {
-                        Blob previousCommitBlob = GetBlob(previousCommit, fileRelativePath);
                         if (previousCommitBlob.Sha == currentCommitBlob.Sha)
                             continue;
                     }
@@ -141,7 +143,7 @@ namespace GitBranchChecker
                     CommitDataModel commitModel = new CommitDataModel(commit, branchModel, currentCommitBlob);
 
                     branchModel.commits.Add(commitModel.id, commitModel);
-                    previousCommit = commit;
+                    previousCommitBlob = commitModel.blob;
                 }
 
                 repoModel.branches.Add(branchModel.name, branchModel);

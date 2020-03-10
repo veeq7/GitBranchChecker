@@ -11,7 +11,10 @@ namespace GitBranchChecker
     public class ConfigInfo
     {
         public string winMergePath = "WinMerge\\WinMergeU.exe"; // defaults to WinMerge in relative Folder
+        public string textEditor = "notepad"; // defaults to notepad
         public List<string> branchNameFilter = new List<string>(); // defaults to no filter (empty list)
+        public DateTime? dateFilterStart = null;
+        public DateTime? dateFilterEnd = null;
     }
 
     public static class ConfigReader
@@ -29,6 +32,7 @@ namespace GitBranchChecker
 
         private static void SaveDefaultConfig()
         {
+            ConfigInfo defaultConfigInfo = new ConfigInfo();
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.IndentChars = "\t";
@@ -36,7 +40,11 @@ namespace GitBranchChecker
             xmlWriter.WriteStartElement("Config");
 
             xmlWriter.WriteStartElement("WinMergePath");
-            xmlWriter.WriteString(new ConfigInfo().winMergePath);
+            xmlWriter.WriteString(defaultConfigInfo.winMergePath);
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("WinMergePath");
+            xmlWriter.WriteString(defaultConfigInfo.textEditor);
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("BranchNameFilter");
@@ -60,7 +68,7 @@ namespace GitBranchChecker
 
                 configInfo.winMergePath = xmlDocument.SelectSingleNode("//WinMergePath").InnerText;
 
-                foreach (XmlNode node in xmlDocument.SelectNodes("//Branch"))
+                foreach (XmlNode node in xmlDocument.SelectNodes("//BranchNameFilter/Branch"))
                 {
                     var filter = node.InnerText;
                     configInfo.branchNameFilter.Add(filter);
