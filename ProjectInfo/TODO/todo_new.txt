@@ -15,3 +15,5 @@
 *8. Przy porownaniu ustalenie stalej pozycji plikow w porownaniu (po lewj starszy po prawnej nowszy) + poprawa czytlenosci przez mowiace cos nazwy porownywanych plikow
 ???9. Prosty programik mowiacy w ktorym branchu znajduje sie wskazany sha podpiety jako custom action (prawdopodobnie przez messagebox)
 *10. Dodanie nullable filtra 'data od' i 'data do' (na dialogu), null => bez ograniczenia daty
+11. Mozliwosc przerwania przeszukiwania + przycisk 'zatrzymaj'
+
