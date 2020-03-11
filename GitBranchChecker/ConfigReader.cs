@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
+using System.Reflection;
+using GitBranchChecker.Utils;
+using System.Windows.Forms;
 
 namespace GitBranchChecker
 {
@@ -19,7 +22,9 @@ namespace GitBranchChecker
 
     public static class ConfigReader
     {
-        public const string configFilePath = "config.xml";
+        
+
+        public static string configFilePath = PathUtils.MakePath("config.xml");
         public static ConfigInfo LoadConfig()
         {
             if (!File.Exists(configFilePath))
@@ -66,8 +71,8 @@ namespace GitBranchChecker
             {
                 xmlDocument.Load(configFilePath);
 
-                configInfo.winMergePath = xmlDocument.SelectSingleNode("//WinMergePath").InnerText;
-                configInfo.textEditor = xmlDocument.SelectSingleNode("//TextEditorPath").InnerText;
+                configInfo.winMergePath = PathUtils.MakePath(xmlDocument.SelectSingleNode("//WinMergePath").InnerText);
+                configInfo.textEditor = PathUtils.MakePath(xmlDocument.SelectSingleNode("//TextEditorPath").InnerText);
 
                 foreach (XmlNode node in xmlDocument.SelectNodes("//BranchNameFilter/Branch"))
                 {
@@ -77,8 +82,9 @@ namespace GitBranchChecker
 
                 return configInfo;
             }
-            catch
+            catch (Exception e)
             {
+                MessageBox.Show(e.Message);
             }
 
             return new ConfigInfo();

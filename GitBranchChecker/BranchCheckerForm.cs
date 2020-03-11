@@ -13,6 +13,7 @@ namespace GitBranchChecker
     public partial class BranchCheckerForm : Form
     {
         #region Vars
+        public static BranchCheckerForm Instance { get; private set; }
         BranchChecker branchChecker = new BranchChecker();
         public static ConfigInfo configInfo = ConfigReader.LoadConfig();
         private bool dateInitialized = false;
@@ -22,6 +23,8 @@ namespace GitBranchChecker
         #region Init
         public BranchCheckerForm(string[] args)
         {
+            Instance = this;
+
             InitializeComponent();
             if (args.Length >= 1)
             {
@@ -294,5 +297,10 @@ namespace GitBranchChecker
         }
 
         #endregion
+
+        private void ProgressBarInfo_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

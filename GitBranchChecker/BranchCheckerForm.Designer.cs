@@ -38,6 +38,8 @@
             this.endFilterDate = new System.Windows.Forms.DateTimePicker();
             this.doFilterStartDate = new System.Windows.Forms.CheckBox();
             this.doFilterEndDate = new System.Windows.Forms.CheckBox();
+            this.ProgressBar = new System.Windows.Forms.ProgressBar();
+            this.ProgressBarInfo = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,7 +68,7 @@
             this.dataGridView1.RowTemplate.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridView1.RowTemplate.Height = 45;
             this.dataGridView1.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.Size = new System.Drawing.Size(776, 348);
+            this.dataGridView1.Size = new System.Drawing.Size(776, 333);
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDown);
             // 
@@ -85,7 +87,7 @@
             this.btnCompare.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCompare.Location = new System.Drawing.Point(707, 418);
             this.btnCompare.Name = "btnCompare";
-            this.btnCompare.Size = new System.Drawing.Size(81, 29);
+            this.btnCompare.Size = new System.Drawing.Size(81, 20);
             this.btnCompare.TabIndex = 4;
             this.btnCompare.Text = "Compare";
             this.btnCompare.UseVisualStyleBackColor = true;
@@ -105,6 +107,7 @@
             // 
             // startFilterDate
             // 
+            this.startFilterDate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.startFilterDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.startFilterDate.Location = new System.Drawing.Point(555, 12);
             this.startFilterDate.Name = "startFilterDate";
@@ -115,6 +118,7 @@
             // 
             // endFilterDate
             // 
+            this.endFilterDate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.endFilterDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.endFilterDate.Location = new System.Drawing.Point(555, 38);
             this.endFilterDate.Name = "endFilterDate";
@@ -125,27 +129,46 @@
             // 
             // doFilterStartDate
             // 
+            this.doFilterStartDate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.doFilterStartDate.AutoSize = true;
             this.doFilterStartDate.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.doFilterStartDate.Location = new System.Drawing.Point(450, 15);
+            this.doFilterStartDate.Location = new System.Drawing.Point(475, 17);
             this.doFilterStartDate.Name = "doFilterStartDate";
-            this.doFilterStartDate.Size = new System.Drawing.Size(99, 17);
+            this.doFilterStartDate.Size = new System.Drawing.Size(74, 17);
             this.doFilterStartDate.TabIndex = 7;
-            this.doFilterStartDate.Text = "Filter Start Date";
+            this.doFilterStartDate.Text = "Start Date";
             this.doFilterStartDate.UseVisualStyleBackColor = true;
             this.doFilterStartDate.CheckedChanged += new System.EventHandler(this.doFilterStartDate_CheckedChanged);
             // 
             // doFilterEndDate
             // 
+            this.doFilterEndDate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.doFilterEndDate.AutoSize = true;
             this.doFilterEndDate.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.doFilterEndDate.Location = new System.Drawing.Point(453, 41);
+            this.doFilterEndDate.Location = new System.Drawing.Point(478, 38);
             this.doFilterEndDate.Name = "doFilterEndDate";
-            this.doFilterEndDate.Size = new System.Drawing.Size(96, 17);
+            this.doFilterEndDate.Size = new System.Drawing.Size(71, 17);
             this.doFilterEndDate.TabIndex = 8;
-            this.doFilterEndDate.Text = "Filter End Date";
+            this.doFilterEndDate.Text = "End Date";
             this.doFilterEndDate.UseVisualStyleBackColor = true;
             this.doFilterEndDate.CheckedChanged += new System.EventHandler(this.doFilterEndDate_CheckedChanged);
+            // 
+            // ProgressBar
+            // 
+            this.ProgressBar.Location = new System.Drawing.Point(15, 418);
+            this.ProgressBar.Name = "ProgressBar";
+            this.ProgressBar.Size = new System.Drawing.Size(459, 20);
+            this.ProgressBar.TabIndex = 9;
+            // 
+            // ProgressBarInfo
+            // 
+            this.ProgressBarInfo.AutoSize = true;
+            this.ProgressBarInfo.Location = new System.Drawing.Point(12, 402);
+            this.ProgressBarInfo.Name = "ProgressBarInfo";
+            this.ProgressBarInfo.Size = new System.Drawing.Size(62, 13);
+            this.ProgressBarInfo.TabIndex = 10;
+            this.ProgressBarInfo.Text = "Select a file";
+            this.ProgressBarInfo.Click += new System.EventHandler(this.ProgressBarInfo_Click);
             // 
             // BranchCheckerForm
             // 
@@ -153,6 +176,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.ProgressBarInfo);
+            this.Controls.Add(this.ProgressBar);
             this.Controls.Add(this.doFilterEndDate);
             this.Controls.Add(this.doFilterStartDate);
             this.Controls.Add(this.endFilterDate);
@@ -182,5 +207,7 @@
         private System.Windows.Forms.DateTimePicker endFilterDate;
         private System.Windows.Forms.CheckBox doFilterStartDate;
         private System.Windows.Forms.CheckBox doFilterEndDate;
+        public System.Windows.Forms.ProgressBar ProgressBar;
+        public System.Windows.Forms.Label ProgressBarInfo;
     }
 }
