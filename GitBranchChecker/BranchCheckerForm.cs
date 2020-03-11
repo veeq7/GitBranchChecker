@@ -7,6 +7,9 @@ using System.Security.Permissions;
 using GitBranchChecker.DataModels;
 using System.Reflection;
 using System.Drawing;
+using GitBranchChecker.Exceptions;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace GitBranchChecker
 {
@@ -17,6 +20,9 @@ namespace GitBranchChecker
         BranchChecker branchChecker = new BranchChecker();
         public static ConfigInfo configInfo = ConfigReader.LoadConfig();
         private bool dateInitialized = false;
+
+        private bool interuptable = false;
+        public bool interupt { get; private set; } = false;
 
         #endregion
 
@@ -75,12 +81,30 @@ namespace GitBranchChecker
         {
             branchChecker.SetFilePath(filePath);
             textBox1.Text = Path.GetFileName(filePath);
-            ParseFile();
+
+            new Thread(()=> ParseFile()).Start();
         }
 
         void ParseFile()
         {
-            dataGridView1.DataSource = branchChecker.Parse();
+            interuptable = true;
+            Invoke(new Action(() => { abortLoading.Enabled = interuptable; }));
+            interupt = false;
+
+            try
+            {
+                var dataTable = branchChecker.Parse();
+                if (dataTable != null)
+                    Invoke(new Action(() => { dataGridView1.DataSource = dataTable; }));
+            }
+            catch (InteruptionException e)
+            {
+                
+            }
+
+           interuptable = false;
+            Invoke(new Action(() => { abortLoading.Enabled = interuptable; }));
+            interupt = false;
         }
         
         void UpdateTable()
@@ -234,9 +258,7 @@ namespace GitBranchChecker
 
         private void InitFilerDates()
         {
-            startFilterDate.Enabled = false;
             startFilterDate.Value = DateTime.Now;
-            endFilterDate.Enabled = false;
             endFilterDate.Value = DateTime.Now;
             dateInitialized = true;
         }
@@ -298,9 +320,12 @@ namespace GitBranchChecker
 
         #endregion
 
-        private void ProgressBarInfo_Click(object sender, EventArgs e)
+        private void abortLoading_Click(object sender, EventArgs e)
         {
-
+            if (interuptable)
+            {
+                interupt = true;
+            }
         }
     }
 }

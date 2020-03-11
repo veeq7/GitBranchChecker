@@ -8,6 +8,7 @@ using GitBranchChecker.DataModels;
 using System.Data;
 using LibGit2Sharp;
 using GitBranchChecker.Utils;
+using GitBranchChecker.Exceptions;
 
 namespace GitBranchChecker
 {
@@ -150,6 +151,8 @@ namespace GitBranchChecker
             int i = 1;
             foreach (var branch in repoModel.repo.Branches)
             {
+                if (BranchCheckerForm.Instance.interupt)
+                    throw new InteruptionException();
                 StatusBarUtils.SetProgress("Loading Branches from git Repository...", i++, repoModel.repo.Branches.Count());
                 if (!IsBranchInFilter(branch) && !IsFilterEmpty())
                     continue;
@@ -160,6 +163,8 @@ namespace GitBranchChecker
                 Blob previousCommitBlob = null;
                 foreach (var commit in branch.Commits.Reverse())
                 {
+                    if (BranchCheckerForm.Instance.interupt)
+                        throw new InteruptionException();
                     Blob currentCommitBlob;
                     try
                     {

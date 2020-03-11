@@ -65,6 +65,7 @@
     <Compile Include="ConfigReader.cs" />
     <Compile Include="DataModels\BranchDataModel.cs" />
     <Compile Include="DataModels\CommitDataModel.cs" />
+    <Compile Include="Exceptions\InteruptionException.cs" />
     <Compile Include="GitPathFinder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

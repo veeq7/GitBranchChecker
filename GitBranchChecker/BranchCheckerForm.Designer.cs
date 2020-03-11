@@ -40,6 +40,7 @@
             this.doFilterEndDate = new System.Windows.Forms.CheckBox();
             this.ProgressBar = new System.Windows.Forms.ProgressBar();
             this.ProgressBarInfo = new System.Windows.Forms.Label();
+            this.abortLoading = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -108,6 +109,7 @@
             // startFilterDate
             // 
             this.startFilterDate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.startFilterDate.Enabled = false;
             this.startFilterDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.startFilterDate.Location = new System.Drawing.Point(555, 12);
             this.startFilterDate.Name = "startFilterDate";
@@ -119,6 +121,7 @@
             // endFilterDate
             // 
             this.endFilterDate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.endFilterDate.Enabled = false;
             this.endFilterDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.endFilterDate.Location = new System.Drawing.Point(555, 38);
             this.endFilterDate.Name = "endFilterDate";
@@ -168,7 +171,18 @@
             this.ProgressBarInfo.Size = new System.Drawing.Size(62, 13);
             this.ProgressBarInfo.TabIndex = 10;
             this.ProgressBarInfo.Text = "Select a file";
-            this.ProgressBarInfo.Click += new System.EventHandler(this.ProgressBarInfo_Click);
+            // 
+            // abortLoading
+            // 
+            this.abortLoading.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.abortLoading.Enabled = false;
+            this.abortLoading.Location = new System.Drawing.Point(480, 418);
+            this.abortLoading.Name = "abortLoading";
+            this.abortLoading.Size = new System.Drawing.Size(81, 20);
+            this.abortLoading.TabIndex = 11;
+            this.abortLoading.Text = "Abort";
+            this.abortLoading.UseVisualStyleBackColor = true;
+            this.abortLoading.Click += new System.EventHandler(this.abortLoading_Click);
             // 
             // BranchCheckerForm
             // 
@@ -176,6 +190,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.abortLoading);
             this.Controls.Add(this.ProgressBarInfo);
             this.Controls.Add(this.ProgressBar);
             this.Controls.Add(this.doFilterEndDate);
@@ -209,5 +224,6 @@
         private System.Windows.Forms.CheckBox doFilterEndDate;
         public System.Windows.Forms.ProgressBar ProgressBar;
         public System.Windows.Forms.Label ProgressBarInfo;
+        private System.Windows.Forms.Button abortLoading;
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,11 +12,14 @@ namespace GitBranchChecker.Utils
     {
         public static void SetProgress(string label, int current, int max)
         {
-            BranchCheckerForm.Instance.ProgressBarInfo.Text = label;
-            if (max <= 0)
-                BranchCheckerForm.Instance.ProgressBar.Value = 100;
-            else
-                BranchCheckerForm.Instance.ProgressBar.Value = (int) Math.Round(((double)current / max) * 100);
+            BranchCheckerForm.Instance.Invoke(new Action(() => {
+                BranchCheckerForm.Instance.ProgressBarInfo.Text = label;
+
+                if (max <= 0)
+                    BranchCheckerForm.Instance.ProgressBar.Value = 100;
+                else
+                    BranchCheckerForm.Instance.ProgressBar.Value = (int)Math.Round(((double)current / max) * 100);
+            }));
         }
 
         public static void ClearProgress()
