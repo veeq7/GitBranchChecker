@@ -16,4 +16,5 @@
 ???9. Prosty programik mowiacy w ktorym branchu znajduje sie wskazany sha podpiety jako custom action (prawdopodobnie przez messagebox)
 *10. Dodanie nullable filtra 'data od' i 'data do' (na dialogu), null => bez ograniczenia daty
 *11. Mozliwosc przerwania przeszukiwania + przycisk 'zatrzymaj'
+12. Dodanie przycisku "Ustawienia", ktory by otwieral w notatniku/innym ustawionym programie .xml z ustawieniami
 
