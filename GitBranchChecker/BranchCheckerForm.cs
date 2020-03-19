@@ -32,12 +32,14 @@ namespace GitBranchChecker
             Instance = this;
 
             InitializeComponent();
+
             if (args.Length >= 1)
             {
                 LoadFile(args[0]);
             }
-            InitFilerDates();
+            InitFilterDates();
         }
+
         #endregion
 
         #region Buttons
@@ -55,6 +57,19 @@ namespace GitBranchChecker
         private void btnRegisterAssosiation_Click(object sender, EventArgs e)
         {
             RegisterApplicationInRegistry();
+        }
+
+        private void abortLoading_Click(object sender, EventArgs e)
+        {
+            if (interuptable)
+            {
+                interupt = true;
+            }
+        }
+
+        private void btnOpenSettings_Click(object sender, EventArgs e)
+        {
+            branchChecker.OpenSettings();
         }
 
         #endregion
@@ -97,7 +112,7 @@ namespace GitBranchChecker
                 if (dataTable != null)
                     Invoke(new Action(() => { dataGridView1.DataSource = dataTable; }));
             }
-            catch (InteruptionException e)
+            catch (InteruptionException)
             {
                 
             }
@@ -129,32 +144,18 @@ namespace GitBranchChecker
             return selectedCommits;
         }
 
-        private int CountValidSelectedCommits()
-        {
-            return GetSelectedCommits().Count;
-        }
-
-        private void LimitSelection()
-        {
-            var selectedCells = dataGridView1.SelectedCells;
-            while (dataGridView1.SelectedCells.Count > 3)
-            {
-                selectedCells[selectedCells.Count - 1].Selected = false;
-            }
-        }
-
         private void OpenFile()
         {
             var selectedCommits = GetSelectedCommits();
             if (selectedCommits.Count > 0)
-                branchChecker.OpenFile(selectedCommits);
+                branchChecker.OpenCommitInEditor(selectedCommits);
         }
 
         private void Compare()
         {
             var selectedCommits = GetSelectedCommits();
             if (selectedCommits.Count > 0 && selectedCommits.Count <= 3)
-                branchChecker.Compare(selectedCommits);
+                branchChecker.CompareCommitsInWinMerge(selectedCommits);
         }
         #endregion
 
@@ -195,6 +196,25 @@ namespace GitBranchChecker
         #endregion
 
         #region GridView
+
+        private int CountValidSelectedCommits()
+        {
+            return GetSelectedCommits().Count;
+        }
+
+        private void LimitSelection()
+        {
+            var selectedCells = dataGridView1.SelectedCells;
+            for (int i = dataGridView1.SelectedCells.Count - 1; i >= 3; i--)
+            {
+                selectedCells[i].Selected = false;
+            } // still does not deselect 4th cell instantly for some unknown reason
+
+            //while (dataGridView1.SelectedCells.Count > 3)
+            //{
+            //    selectedCells[selectedCells.Count - 1].Selected = false;
+            //}
+        }
 
         private CommitDataModel GetCommitFromGrid(int col, int row)
         {
@@ -256,7 +276,7 @@ namespace GitBranchChecker
 
         #region DateFilter
 
-        private void InitFilerDates()
+        private void InitFilterDates()
         {
             startFilterDate.Value = DateTime.Now;
             endFilterDate.Value = DateTime.Now;
@@ -319,13 +339,5 @@ namespace GitBranchChecker
         }
 
         #endregion
-
-        private void abortLoading_Click(object sender, EventArgs e)
-        {
-            if (interuptable)
-            {
-                interupt = true;
-            }
-        }
     }
 }

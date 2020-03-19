@@ -39,7 +39,12 @@ namespace GitBranchChecker
             return parser.Parse(repo);
         }
 
-        public void OpenFile(List<CommitDataModel> commits)
+        public void OpenSettings()
+        {
+            Process.Start(BranchCheckerForm.configInfo.textEditor, ConfigReader.configFilePath);
+        }
+
+        public void OpenCommitInEditor(List<CommitDataModel> commits)
         {
             int i = 0;
             commits.OrderByDescending(x => x.commit.Committer.When).ToList().ForEach((x) => {
@@ -47,15 +52,15 @@ namespace GitBranchChecker
             });
         }
 
-        public void Compare(List<CommitDataModel> commits)
+        public void CompareCommitsInWinMerge(List<CommitDataModel> commits)
         {
             var orderedCommits = commits.OrderByDescending(x => x.commit.Committer.When).ToList();
             string fileArgs = "\"" + String.Join("\" \"", orderedCommits.Select((x, i) => GetCommitFile(x, i))) + "\"";
-            string nameArgs = MakeNameArgs(orderedCommits);
+            string nameArgs = MakeDescriptionArgsForWinMerge(orderedCommits);
             Process.Start(BranchCheckerForm.configInfo.winMergePath, fileArgs + " " + nameArgs);
         }
 
-        private string MakeNameArgs(List<CommitDataModel> commits)
+        private string MakeDescriptionArgsForWinMerge(List<CommitDataModel> commits)
         {
             if (commits.Count == 2)
             {

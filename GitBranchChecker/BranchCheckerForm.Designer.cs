@@ -30,17 +30,18 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BranchCheckerForm));
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.btnSelectFile = new System.Windows.Forms.Button();
             this.btnCompare = new System.Windows.Forms.Button();
+            this.ProgressBar = new System.Windows.Forms.ProgressBar();
+            this.ProgressBarInfo = new System.Windows.Forms.Label();
+            this.abortLoading = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.btnRegisterAssosiation = new System.Windows.Forms.Button();
             this.startFilterDate = new System.Windows.Forms.DateTimePicker();
             this.endFilterDate = new System.Windows.Forms.DateTimePicker();
             this.doFilterStartDate = new System.Windows.Forms.CheckBox();
             this.doFilterEndDate = new System.Windows.Forms.CheckBox();
-            this.ProgressBar = new System.Windows.Forms.ProgressBar();
-            this.ProgressBarInfo = new System.Windows.Forms.Label();
-            this.abortLoading = new System.Windows.Forms.Button();
+            this.btnOpenSettings = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -51,27 +52,6 @@
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(359, 20);
             this.textBox1.TabIndex = 0;
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView1.BackgroundColor = System.Drawing.Color.WhiteSmoke;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 64);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.RowTemplate.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.RowTemplate.Height = 45;
-            this.dataGridView1.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.Size = new System.Drawing.Size(776, 333);
-            this.dataGridView1.TabIndex = 1;
-            this.dataGridView1.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDown);
             // 
             // btnSelectFile
             // 
@@ -94,14 +74,63 @@
             this.btnCompare.UseVisualStyleBackColor = true;
             this.btnCompare.Click += new System.EventHandler(this.btnCompare_Click);
             // 
+            // ProgressBar
+            // 
+            this.ProgressBar.Location = new System.Drawing.Point(15, 418);
+            this.ProgressBar.Name = "ProgressBar";
+            this.ProgressBar.Size = new System.Drawing.Size(459, 20);
+            this.ProgressBar.TabIndex = 9;
+            // 
+            // ProgressBarInfo
+            // 
+            this.ProgressBarInfo.AutoSize = true;
+            this.ProgressBarInfo.Location = new System.Drawing.Point(12, 402);
+            this.ProgressBarInfo.Name = "ProgressBarInfo";
+            this.ProgressBarInfo.Size = new System.Drawing.Size(62, 13);
+            this.ProgressBarInfo.TabIndex = 10;
+            this.ProgressBarInfo.Text = "Select a file";
+            // 
+            // abortLoading
+            // 
+            this.abortLoading.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.abortLoading.Enabled = false;
+            this.abortLoading.Location = new System.Drawing.Point(480, 418);
+            this.abortLoading.Name = "abortLoading";
+            this.abortLoading.Size = new System.Drawing.Size(81, 20);
+            this.abortLoading.TabIndex = 11;
+            this.abortLoading.Text = "Abort";
+            this.abortLoading.UseVisualStyleBackColor = true;
+            this.abortLoading.Click += new System.EventHandler(this.abortLoading_Click);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView1.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(12, 64);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.RowTemplate.DefaultCellStyle.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.RowTemplate.Height = 45;
+            this.dataGridView1.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.Size = new System.Drawing.Size(776, 333);
+            this.dataGridView1.TabIndex = 1;
+            this.dataGridView1.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDown);
+            // 
             // btnRegisterAssosiation
             // 
             this.btnRegisterAssosiation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRegisterAssosiation.BackgroundImage = global::GitBranchChecker.Properties.Resources.RegEdit1;
             this.btnRegisterAssosiation.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnRegisterAssosiation.Location = new System.Drawing.Point(755, 9);
+            this.btnRegisterAssosiation.Location = new System.Drawing.Point(765, 11);
             this.btnRegisterAssosiation.Name = "btnRegisterAssosiation";
-            this.btnRegisterAssosiation.Size = new System.Drawing.Size(33, 30);
+            this.btnRegisterAssosiation.Size = new System.Drawing.Size(23, 21);
             this.btnRegisterAssosiation.TabIndex = 3;
             this.btnRegisterAssosiation.UseVisualStyleBackColor = true;
             this.btnRegisterAssosiation.Click += new System.EventHandler(this.btnRegisterAssosiation_Click);
@@ -156,33 +185,17 @@
             this.doFilterEndDate.UseVisualStyleBackColor = true;
             this.doFilterEndDate.CheckedChanged += new System.EventHandler(this.doFilterEndDate_CheckedChanged);
             // 
-            // ProgressBar
+            // btnOpenSettings
             // 
-            this.ProgressBar.Location = new System.Drawing.Point(15, 418);
-            this.ProgressBar.Name = "ProgressBar";
-            this.ProgressBar.Size = new System.Drawing.Size(459, 20);
-            this.ProgressBar.TabIndex = 9;
-            // 
-            // ProgressBarInfo
-            // 
-            this.ProgressBarInfo.AutoSize = true;
-            this.ProgressBarInfo.Location = new System.Drawing.Point(12, 402);
-            this.ProgressBarInfo.Name = "ProgressBarInfo";
-            this.ProgressBarInfo.Size = new System.Drawing.Size(62, 13);
-            this.ProgressBarInfo.TabIndex = 10;
-            this.ProgressBarInfo.Text = "Select a file";
-            // 
-            // abortLoading
-            // 
-            this.abortLoading.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.abortLoading.Enabled = false;
-            this.abortLoading.Location = new System.Drawing.Point(480, 418);
-            this.abortLoading.Name = "abortLoading";
-            this.abortLoading.Size = new System.Drawing.Size(81, 20);
-            this.abortLoading.TabIndex = 11;
-            this.abortLoading.Text = "Abort";
-            this.abortLoading.UseVisualStyleBackColor = true;
-            this.abortLoading.Click += new System.EventHandler(this.abortLoading_Click);
+            this.btnOpenSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOpenSettings.BackgroundImage = global::GitBranchChecker.Properties.Resources.settings;
+            this.btnOpenSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnOpenSettings.Location = new System.Drawing.Point(736, 11);
+            this.btnOpenSettings.Name = "btnOpenSettings";
+            this.btnOpenSettings.Size = new System.Drawing.Size(23, 21);
+            this.btnOpenSettings.TabIndex = 12;
+            this.btnOpenSettings.UseVisualStyleBackColor = true;
+            this.btnOpenSettings.Click += new System.EventHandler(this.btnOpenSettings_Click);
             // 
             // BranchCheckerForm
             // 
@@ -190,6 +203,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnOpenSettings);
             this.Controls.Add(this.abortLoading);
             this.Controls.Add(this.ProgressBarInfo);
             this.Controls.Add(this.ProgressBar);
@@ -214,16 +228,17 @@
         #endregion
 
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button btnSelectFile;
-        private System.Windows.Forms.Button btnRegisterAssosiation;
         private System.Windows.Forms.Button btnCompare;
+        public System.Windows.Forms.ProgressBar ProgressBar;
+        public System.Windows.Forms.Label ProgressBarInfo;
+        private System.Windows.Forms.Button abortLoading;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button btnRegisterAssosiation;
         private System.Windows.Forms.DateTimePicker startFilterDate;
         private System.Windows.Forms.DateTimePicker endFilterDate;
         private System.Windows.Forms.CheckBox doFilterStartDate;
         private System.Windows.Forms.CheckBox doFilterEndDate;
-        public System.Windows.Forms.ProgressBar ProgressBar;
-        public System.Windows.Forms.Label ProgressBarInfo;
-        private System.Windows.Forms.Button abortLoading;
+        private System.Windows.Forms.Button btnOpenSettings;
     }
 }

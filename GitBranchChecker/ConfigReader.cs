@@ -13,17 +13,18 @@ namespace GitBranchChecker
 {
     public class ConfigInfo
     {
+        // Loaded from Config File
         public string winMergePath = "WinMerge\\WinMergeU.exe"; // defaults to WinMerge in relative Folder
         public string textEditor = "notepad"; // defaults to notepad
         public List<string> branchNameFilter = new List<string>(); // defaults to no filter (empty list)
+
+        // Loaded from UI
         public DateTime? dateFilterStart = null;
         public DateTime? dateFilterEnd = null;
     }
 
     public static class ConfigReader
     {
-        
-
         public static string configFilePath = PathUtils.MakePath("config.xml");
         public static ConfigInfo LoadConfig()
         {
