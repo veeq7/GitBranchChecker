@@ -5,18 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.IO;
+using System.Reflection;
+using GitBranchChecker.Utils;
+using System.Windows.Forms;
 
 namespace GitBranchChecker
 {
     public class ConfigInfo
     {
         public string winMergePath = "WinMerge\\WinMergeU.exe"; // defaults to WinMerge in relative Folder
+        public string textEditor = "notepad"; // defaults to notepad
         public List<string> branchNameFilter = new List<string>(); // defaults to no filter (empty list)
+        public DateTime? dateFilterStart = null;
+        public DateTime? dateFilterEnd = null;
     }
 
     public static class ConfigReader
     {
-        public const string configFilePath = "config.xml";
+        
+
+        public static string configFilePath = PathUtils.MakePath("config.xml");
         public static ConfigInfo LoadConfig()
         {
             if (!File.Exists(configFilePath))
@@ -29,6 +37,7 @@ namespace GitBranchChecker
 
         private static void SaveDefaultConfig()
         {
+            ConfigInfo defaultConfigInfo = new ConfigInfo();
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.Indent = true;
             settings.IndentChars = "\t";
@@ -36,7 +45,11 @@ namespace GitBranchChecker
             xmlWriter.WriteStartElement("Config");
 
             xmlWriter.WriteStartElement("WinMergePath");
-            xmlWriter.WriteString(new ConfigInfo().winMergePath);
+            xmlWriter.WriteString(defaultConfigInfo.winMergePath);
+            xmlWriter.WriteEndElement();
+
+            xmlWriter.WriteStartElement("TextEditorPath");
+            xmlWriter.WriteString(defaultConfigInfo.textEditor);
             xmlWriter.WriteEndElement();
 
             xmlWriter.WriteStartElement("BranchNameFilter");
@@ -58,9 +71,10 @@ namespace GitBranchChecker
             {
                 xmlDocument.Load(configFilePath);
 
-                configInfo.winMergePath = xmlDocument.SelectSingleNode("//WinMergePath").InnerText;
+                configInfo.winMergePath = PathUtils.MakePath(xmlDocument.SelectSingleNode("//WinMergePath").InnerText);
+                configInfo.textEditor = PathUtils.MakePath(xmlDocument.SelectSingleNode("//TextEditorPath").InnerText);
 
-                foreach (XmlNode node in xmlDocument.SelectNodes("//Branch"))
+                foreach (XmlNode node in xmlDocument.SelectNodes("//BranchNameFilter/Branch"))
                 {
                     var filter = node.InnerText;
                     configInfo.branchNameFilter.Add(filter);
@@ -68,8 +82,9 @@ namespace GitBranchChecker
 
                 return configInfo;
             }
-            catch
+            catch (Exception e)
             {
+                MessageBox.Show(e.Message);
             }
 
             return new ConfigInfo();

@@ -1,0 +1,7 @@
+Pytanie do pkt. 9, ten punkt jest dla mnie niezrozumiały, ponieważ
+- Nie mogę wyszukać Sha pliku z poziomu Source Tree, ponieważ nie jest wiadomym do jakiego pliku się odnosimy.
+- Nie mogę wyszukać powtórzeń commitu, ponieważ Sha commitu jest unikalne.
+- Nie mogę wyszukać commitu w sourcetree po Sha, ponieważ musiałbym ingerować z API sourcetree, by go odnaleść.
+Co dokładnie miałbym zrobić?
+
+Wszystkie inne punkty zostały ukończone

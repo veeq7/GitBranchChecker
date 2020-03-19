@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using GitBranchChecker.DataModels;
 using System.Data;
 using LibGit2Sharp;
+using GitBranchChecker.Utils;
+using GitBranchChecker.Exceptions;
 
 namespace GitBranchChecker
 {
@@ -17,15 +19,23 @@ namespace GitBranchChecker
         {
             DataTable dataTable = new DataTable();
 
-            foreach (var branchName in repo.branches.Keys)
-            {
-                dataTable.Columns.Add(branchName);
-            }
+            repo.branchesByColumn.Clear();
+            repo.branches.Values.ToList().ForEach(branch => branch.commitsByRow.Clear());
 
+            var branches = repo.branches.Values.ToList();
+            SortBranchListByBranchFilter(branches);
+
+            foreach (var branch in branches)
+            {
+                dataTable.Columns.Add(branch.name);
+            }
+            
             var indexCommits = MakeIndexCommitList(repo);
             int x = 0;
-            foreach(var branch in repo.branches.Values)
+            int i = 1;
+            foreach (var branch in branches)
             {
+                StatusBarUtils.SetProgress("Parsing Branches onto the Table...", i++, branches.Count);
                 int y = 0;
                 foreach(var indexCommit in indexCommits)
                 {
@@ -35,6 +45,7 @@ namespace GitBranchChecker
                 repo.branchesByColumn.Add(x, branch);
                 x++;
             }
+            StatusBarUtils.ClearProgress();
 
             return dataTable;
         }
@@ -49,9 +60,9 @@ namespace GitBranchChecker
             row = dataTable.Rows[y];
 
             var commit = GetCommit(branch, indexCommit.Message);
-            if (commit != null)
+            if (commit != null && commit.IsInDateFilter())
             {
-                row[x] = commit.FormatDate() + " " + commit.commit.Sha + " " + commit.name;
+                row[x] = commit.ToString();
 
                 branch.commitsByRow.Add(y, commit);
             }
@@ -71,9 +82,12 @@ namespace GitBranchChecker
 
         List<Commit> MakeIndexCommitList(RepoDataModel repo)
         {
+
             List<Commit> commits = new List<Commit>();
+            int i = 1;
             foreach(var branch in repo.branches.Values)
             {
+                StatusBarUtils.SetProgress("Creating Index Commit List...", i++, repo.branches.Count);
                 foreach (var commit in branch.commits.Values)
                 {
                     if (!IsCommitAdded(commit.commit, commits))
@@ -83,6 +97,7 @@ namespace GitBranchChecker
                 }
             }
             commits = commits.OrderByDescending(commit => commit.Committer.When).ToList();
+            StatusBarUtils.ClearProgress();
             return commits;
         }
 
@@ -106,22 +121,50 @@ namespace GitBranchChecker
             return list;
         }
 
+        public void SortBranchListByBranchFilter(List<BranchDataModel> branches)
+        {
+            List<string> branchNames = BranchCheckerForm.configInfo.branchNameFilter;
+
+            if (branchNames.Count == 0 || (string.IsNullOrEmpty(branchNames[0]) && branchNames.Count > 0))
+                return;
+
+            int changes;
+            do
+            {
+                changes = 0;
+                for (int i = 0; i < branches.Count; i++)
+                {
+                    if (branches[i].name != branchNames[i])
+                    {
+                        branches.Swap(i, i + 1);
+                        changes++;
+                    }
+                }
+            }
+            while (changes > 0);
+        }
+
         public RepoDataModel GetRepo(string gitPath, string fileRelativePath)
         {
             RepoDataModel repoModel = new RepoDataModel();
             repoModel.repo = new Repository(gitPath);
-
+            int i = 1;
             foreach (var branch in repoModel.repo.Branches)
             {
+                if (BranchCheckerForm.Instance.interupt)
+                    throw new InteruptionException();
+                StatusBarUtils.SetProgress("Loading Branches from git Repository...", i++, repoModel.repo.Branches.Count());
                 if (!IsBranchInFilter(branch) && !IsFilterEmpty())
                     continue;
 
                 BranchDataModel branchModel = new BranchDataModel();
                 branchModel.name = branch.FriendlyName;
 
-                Commit previousCommit = null;
+                Blob previousCommitBlob = null;
                 foreach (var commit in branch.Commits.Reverse())
                 {
+                    if (BranchCheckerForm.Instance.interupt)
+                        throw new InteruptionException();
                     Blob currentCommitBlob;
                     try
                     {
@@ -131,9 +174,8 @@ namespace GitBranchChecker
                     {
                         continue;
                     }
-                    if (previousCommit != null)
+                    if (previousCommitBlob != null)
                     {
-                        Blob previousCommitBlob = GetBlob(previousCommit, fileRelativePath);
                         if (previousCommitBlob.Sha == currentCommitBlob.Sha)
                             continue;
                     }
@@ -141,11 +183,12 @@ namespace GitBranchChecker
                     CommitDataModel commitModel = new CommitDataModel(commit, branchModel, currentCommitBlob);
 
                     branchModel.commits.Add(commitModel.id, commitModel);
-                    previousCommit = commit;
+                    previousCommitBlob = commitModel.blob;
                 }
 
                 repoModel.branches.Add(branchModel.name, branchModel);
             }
+            StatusBarUtils.ClearProgress();
             return repoModel;
         }
 
